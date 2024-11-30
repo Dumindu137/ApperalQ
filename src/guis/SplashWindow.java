@@ -69,7 +69,7 @@ public class SplashWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        ProgressBar.setForeground(new java.awt.Color(255, 102, 0));
+        ProgressBar.setForeground(new java.awt.Color(255, 192, 0));
         ProgressBar.setStringPainted(true);
 
         LoadingText.setText("Loading");
