@@ -29,15 +29,15 @@ public class SplashWindow extends javax.swing.JFrame {
                 for (int i = 0; i <= 100; i++) {
                     ProgressBar.setValue(i);
                     if(i==20){
-                        LoadingText.setText("please Wait!");
+                        LoadingText.setText("Please Wait!");
                     }else if (i==30){
                         LoadingText.setText("Libraries Loading");
                     }else if (i==45){
-                        LoadingText.setText("Create Datavase connection");
+                        LoadingText.setText("Create Database Connection");
                     }else if (i==70){
-                        LoadingText.setText("ui generated succesfully");
+                        LoadingText.setText("UI Generated Succesfully");
                     }else if (i==88){
-                        LoadingText.setText(" Done");    
+                        LoadingText.setText("Done");    
                     }
                     try {
                         Thread.sleep(30);
