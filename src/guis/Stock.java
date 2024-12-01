@@ -173,7 +173,7 @@ public class Stock extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 192, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 167, 0));
 
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         jLabel1.setText("Stock");
@@ -208,8 +208,9 @@ public class Stock extends javax.swing.JFrame {
         jFormattedTextField2.setText("0");
         jFormattedTextField2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton2.setText("Find");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -234,6 +235,7 @@ public class Stock extends javax.swing.JFrame {
 
         jButton3.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton3.setText("Find");
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -242,13 +244,16 @@ public class Stock extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton4.setText("Clear All");
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
 
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setText("Clear All");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-dashboard-24.png"))); // NOI18N
         jLabel13.setText("Dashboard");

@@ -4,6 +4,8 @@
  */
 package guis;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +27,10 @@ public class EmpReg extends javax.swing.JDialog {
     private HashMap<String, String> cityMap = new HashMap<>();
     private HashMap<String, String> empMap = new HashMap<>();
 
+    private boolean isProgrammaticChange = false;
+    private boolean isUserTriggered = true;
+
+    private Employees employees;
     private String email;
 
     /**
@@ -125,7 +131,7 @@ public class EmpReg extends javax.swing.JDialog {
                     + "ON `employee_address`.`city_id` = `city`.`id` INNER JOIN `employee` ON `employee_address`.`employee_email`"
                     + "= `employee`.`email`");
 
-            DefaultTableModel model = (DefaultTableModel) jTable3.getModel();
+            DefaultTableModel model = (DefaultTableModel) AddressTable.getModel();
             model.setRowCount(0);
 
             while (resultSet.next()) {
@@ -160,7 +166,7 @@ public class EmpReg extends javax.swing.JDialog {
             }
 
             DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
-            jComboBox5.setModel(model);
+            cityComboboxAtAdress.setModel(model);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,7 +188,7 @@ public class EmpReg extends javax.swing.JDialog {
             }
 
             DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
-            jComboBox6.setModel(model);
+            employeeAtAddressView.setModel(model);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,11 +212,9 @@ public class EmpReg extends javax.swing.JDialog {
         jLabel14 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        jPasswordField3 = new javax.swing.JPasswordField();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jTextField9 = new javax.swing.JTextField();
-        jPasswordField4 = new javax.swing.JPasswordField();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
@@ -223,6 +227,8 @@ public class EmpReg extends javax.swing.JDialog {
         jComboBox4 = new javax.swing.JComboBox<>();
         jTextField6 = new javax.swing.JTextField();
         jTextField10 = new javax.swing.JTextField();
+        passwwwrd = new javax.swing.JTextField();
+        confPswrd = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
         jComboBox2 = new javax.swing.JComboBox<>();
@@ -239,7 +245,6 @@ public class EmpReg extends javax.swing.JDialog {
         jTextField2 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jPasswordField1 = new javax.swing.JPasswordField();
         jLabel8 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton2 = new javax.swing.JButton();
@@ -248,22 +253,23 @@ public class EmpReg extends javax.swing.JDialog {
         jTable2 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        pswrd = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
-        jTextField11 = new javax.swing.JTextField();
+        line_1 = new javax.swing.JTextField();
         jLabel23 = new javax.swing.JLabel();
-        jTextField12 = new javax.swing.JTextField();
+        line_2 = new javax.swing.JTextField();
         jLabel24 = new javax.swing.JLabel();
-        jComboBox5 = new javax.swing.JComboBox<>();
-        jButton6 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
+        cityComboboxAtAdress = new javax.swing.JComboBox<>();
+        addressAddBtn = new javax.swing.JButton();
+        addressUpdateBtn = new javax.swing.JButton();
+        AddressDelBtn = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
-        jComboBox6 = new javax.swing.JComboBox<>();
-        jButton10 = new javax.swing.JButton();
+        AddressTable = new javax.swing.JTable();
+        employeeAtAddressView = new javax.swing.JComboBox<>();
+        ClearBtnAtAdreesView = new javax.swing.JButton();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -314,14 +320,16 @@ public class EmpReg extends javax.swing.JDialog {
 
         jButton5.setForeground(new java.awt.Color(255, 0, 0));
         jButton5.setText("Clear All");
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        jButton7.setBackground(new java.awt.Color(255, 192, 0));
+        jButton7.setBackground(new java.awt.Color(255, 167, 0));
         jButton7.setText("Register");
+        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -339,6 +347,18 @@ public class EmpReg extends javax.swing.JDialog {
         jTextField10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField10ActionPerformed(evt);
+            }
+        });
+
+        passwwwrd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwwwrdActionPerformed(evt);
+            }
+        });
+
+        confPswrd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                confPswrdActionPerformed(evt);
             }
         });
 
@@ -367,7 +387,7 @@ public class EmpReg extends javax.swing.JDialog {
                             .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
                         .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -383,8 +403,9 @@ public class EmpReg extends javax.swing.JDialog {
                                 .addGap(30, 30, 30)))
                         .addGap(0, 0, 0)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPasswordField3, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-                            .addComponent(jTextField9)))
+                            .addComponent(jTextField9, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                            .addComponent(passwwwrd)
+                            .addComponent(confPswrd)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -395,9 +416,7 @@ public class EmpReg extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel18)
                                 .addGap(37, 37, 37)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jComboBox3, 0, 196, Short.MAX_VALUE)
-                                    .addComponent(jPasswordField4))))))
+                                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(95, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
@@ -409,44 +428,41 @@ public class EmpReg extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(20, 20, 20)
-                                .addComponent(jLabel11)
-                                .addGap(23, 23, 23)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel17))
-                                .addGap(5, 5, 5))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel14))))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel10)
-                                    .addComponent(jPasswordField3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel19)
-                                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel20)
-                                .addComponent(jLabel16)
-                                .addComponent(jPasswordField4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel15)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(20, 20, 20)
+                        .addComponent(jLabel11)
+                        .addGap(23, 23, 23)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel17))
+                        .addGap(5, 5, 5))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14))))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(224, 224, 224)
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel10))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(passwwwrd)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel19)
+                                .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel20)
+                    .addComponent(jTextField6, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                    .addComponent(jLabel16)
+                    .addComponent(confPswrd))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel18)
                             .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
@@ -462,7 +478,7 @@ public class EmpReg extends javax.swing.JDialog {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(211, Short.MAX_VALUE))
+                .addContainerGap(184, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Register Employee", jPanel1);
@@ -490,8 +506,9 @@ public class EmpReg extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jLabel2.setText("First Name");
 
-        jButton4.setBackground(new java.awt.Color(255, 192, 0));
+        jButton4.setBackground(new java.awt.Color(255, 167, 0));
         jButton4.setText("Update");
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -514,6 +531,7 @@ public class EmpReg extends javax.swing.JDialog {
 
         jButton2.setForeground(new java.awt.Color(255, 0, 0));
         jButton2.setText("Clear All");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -544,6 +562,7 @@ public class EmpReg extends javax.swing.JDialog {
         jScrollPane2.setViewportView(jTable2);
 
         jButton1.setText("Refresh Table");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -566,7 +585,7 @@ public class EmpReg extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
@@ -575,6 +594,7 @@ public class EmpReg extends javax.swing.JDialog {
         jButton3.setBackground(new java.awt.Color(255, 0, 0));
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("Delete");
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -591,24 +611,6 @@ public class EmpReg extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(jLabel1))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(jLabel2)
-                        .addGap(27, 27, 27)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(157, 157, 157)
-                        .addComponent(jLabel13)
-                        .addGap(30, 30, 30)
-                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(59, 59, 59)
-                        .addComponent(jLabel12)
-                        .addGap(31, 31, 31)
-                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(114, 114, 114)
-                        .addComponent(jLabel6)
-                        .addGap(30, 30, 30)
-                        .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(430, 430, 430)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -634,7 +636,27 @@ public class EmpReg extends javax.swing.JDialog {
                         .addGap(32, 32, 32)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(60, 60, 60)
+                                .addComponent(jLabel2)
+                                .addGap(27, 27, 27)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(157, 157, 157)
+                                .addComponent(jLabel13))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(59, 59, 59)
+                                .addComponent(jLabel12)
+                                .addGap(31, 31, 31)
+                                .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(114, 114, 114)
+                                .addComponent(jLabel6)))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pswrd, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 72, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -654,18 +676,18 @@ public class EmpReg extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
                         .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
+                        .addGap(20, 20, 20)
                         .addComponent(jLabel12))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
+                        .addGap(13, 13, 13)
                         .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
-                        .addComponent(jLabel6))
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel6)
+                            .addComponent(pswrd, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -704,58 +726,61 @@ public class EmpReg extends javax.swing.JDialog {
         jLabel22.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jLabel22.setText(" Line 1");
 
-        jTextField11.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
-        jTextField11.addActionListener(new java.awt.event.ActionListener() {
+        line_1.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        line_1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField11ActionPerformed(evt);
+                line_1ActionPerformed(evt);
             }
         });
 
         jLabel23.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jLabel23.setText("Line 2");
 
-        jTextField12.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
-        jTextField12.addActionListener(new java.awt.event.ActionListener() {
+        line_2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        line_2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField12ActionPerformed(evt);
+                line_2ActionPerformed(evt);
             }
         });
 
         jLabel24.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jLabel24.setText("City");
 
-        jComboBox5.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
-        jComboBox5.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cityComboboxAtAdress.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        cityComboboxAtAdress.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        jButton6.setBackground(new java.awt.Color(255, 192, 0));
-        jButton6.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
-        jButton6.setText("Add");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        addressAddBtn.setBackground(new java.awt.Color(255, 167, 0));
+        addressAddBtn.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        addressAddBtn.setText("Add");
+        addressAddBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        addressAddBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                addressAddBtnActionPerformed(evt);
             }
         });
 
-        jButton8.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
-        jButton8.setText("Update");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        addressUpdateBtn.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        addressUpdateBtn.setText("Update");
+        addressUpdateBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        addressUpdateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                addressUpdateBtnActionPerformed(evt);
             }
         });
 
-        jButton9.setBackground(new java.awt.Color(255, 0, 0));
-        jButton9.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
-        jButton9.setForeground(new java.awt.Color(255, 255, 255));
-        jButton9.setText("Delete");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
+        AddressDelBtn.setBackground(new java.awt.Color(255, 0, 0));
+        AddressDelBtn.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        AddressDelBtn.setForeground(new java.awt.Color(255, 255, 255));
+        AddressDelBtn.setText("Delete");
+        AddressDelBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AddressDelBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
+                AddressDelBtnActionPerformed(evt);
             }
         });
 
-        jTable3.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        AddressTable.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        AddressTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -771,30 +796,31 @@ public class EmpReg extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
-        jTable3.addMouseListener(new java.awt.event.MouseAdapter() {
+        AddressTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable3MouseClicked(evt);
+                AddressTableMouseClicked(evt);
             }
         });
-        jScrollPane3.setViewportView(jTable3);
+        jScrollPane3.setViewportView(AddressTable);
 
-        jComboBox6.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox6.addItemListener(new java.awt.event.ItemListener() {
+        employeeAtAddressView.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        employeeAtAddressView.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jComboBox6ItemStateChanged(evt);
+                employeeAtAddressViewItemStateChanged(evt);
             }
         });
-        jComboBox6.addActionListener(new java.awt.event.ActionListener() {
+        employeeAtAddressView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox6ActionPerformed(evt);
+                employeeAtAddressViewActionPerformed(evt);
             }
         });
 
-        jButton10.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
-        jButton10.setText("Clear All");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        ClearBtnAtAdreesView.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
+        ClearBtnAtAdreesView.setText("Clear All");
+        ClearBtnAtAdreesView.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ClearBtnAtAdreesView.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                ClearBtnAtAdreesViewActionPerformed(evt);
             }
         });
 
@@ -811,7 +837,7 @@ public class EmpReg extends javax.swing.JDialog {
                         .addGap(22, 22, 22)
                         .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(employeeAtAddressView, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(38, 38, 38)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -824,19 +850,19 @@ public class EmpReg extends javax.swing.JDialog {
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(20, 20, 20)
-                                .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(cityComboboxAtAdress, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addGap(159, 159, 159)
-                                .addComponent(jButton10))
-                            .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(ClearBtnAtAdreesView))
+                            .addComponent(addressAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addressUpdateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AddressDelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(6, 6, 6))
@@ -848,33 +874,35 @@ public class EmpReg extends javax.swing.JDialog {
                 .addComponent(jLabel7)
                 .addGap(38, 38, 38)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(employeeAtAddressView, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel22)
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel23)
-                        .addGap(31, 31, 31)
-                        .addComponent(jLabel24))
+                        .addGap(14, 14, 14)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(29, 29, 29)
+                                .addComponent(jLabel22)
+                                .addGap(22, 22, 22)
+                                .addComponent(jLabel23)
+                                .addGap(31, 31, 31)
+                                .addComponent(jLabel24))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(43, 43, 43)
+                        .addComponent(line_1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(line_2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
-                        .addComponent(jComboBox5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cityComboboxAtAdress, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(jButton10)
+                        .addComponent(ClearBtnAtAdreesView)
                         .addGap(12, 12, 12)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addressAddBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addressUpdateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(9, 9, 9)
-                        .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(AddressDelBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
         jTabbedPane1.addTab("Address View", jPanel4);
@@ -908,8 +936,8 @@ public class EmpReg extends javax.swing.JDialog {
             String lastName = jTextField10.getText();
             String nic = jTextField9.getText();
             String mobile = jTextField4.getText();
-            String password = String.valueOf(jPasswordField3.getPassword());
-            String repassword = String.valueOf(jPasswordField4.getPassword());
+            String password = String.valueOf(passwwwrd.getText());
+            String repassword = String.valueOf(confPswrd.getText());
             String type = String.valueOf(jComboBox3.getSelectedItem());
             String gender = String.valueOf(jComboBox4.getSelectedItem());
 
@@ -959,6 +987,7 @@ public class EmpReg extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Employee Registered Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                     loadEmployees();
+
                 }
             }
 
@@ -979,7 +1008,7 @@ public class EmpReg extends javax.swing.JDialog {
             String lastName = jTextField7.getText();
             String nic = jTextField8.getText();
             String mobile = jTextField3.getText();
-            String password = String.valueOf(jPasswordField1.getPassword());
+            String password = String.valueOf(pswrd.getText());
             String type = String.valueOf(jComboBox1.getSelectedItem());
             String gender = String.valueOf(jComboBox2.getSelectedItem());
 
@@ -1067,7 +1096,7 @@ public class EmpReg extends javax.swing.JDialog {
         jTextField7.setText(lastName);
 
         String password = String.valueOf(jTable2.getValueAt(row, 3));
-        jPasswordField1.setText(password);
+        pswrd.setText(password);
 
         String mobile = String.valueOf(jTable2.getValueAt(row, 4));
         jTextField3.setText(mobile);
@@ -1131,21 +1160,21 @@ public class EmpReg extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
-    private void jTextField11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField11ActionPerformed
+    private void line_1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_line_1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField11ActionPerformed
+    }//GEN-LAST:event_line_1ActionPerformed
 
-    private void jTextField12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField12ActionPerformed
+    private void line_2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_line_2ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField12ActionPerformed
+    }//GEN-LAST:event_line_2ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void addressAddBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressAddBtnActionPerformed
         //adress add btn
         try {
-            String line1 = jTextField11.getText();
-            String line2 = jTextField12.getText();
-            String city = String.valueOf(jComboBox5.getSelectedItem());
-            String empid = String.valueOf(jComboBox6.getSelectedItem());
+            String line1 = line_1.getText();
+            String line2 = line_2.getText();
+            String city = String.valueOf(cityComboboxAtAdress.getSelectedItem());
+            String empid = String.valueOf(employeeAtAddressView.getSelectedItem());
 
             if (empid.equals("Select")) {
                 JOptionPane.showMessageDialog(this, "Please select an employee", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1158,11 +1187,11 @@ public class EmpReg extends javax.swing.JDialog {
             } else {
                 boolean isFound = false;
 
-                for (int i = 0; i < jTable3.getRowCount(); i++) {
+                for (int i = 0; i < AddressTable.getRowCount(); i++) {
 
-                    String getLine1 = String.valueOf(jTable3.getValueAt(i, 2));
-                    String getLine2 = String.valueOf(jTable3.getValueAt(i, 3));
-                    String getCity = String.valueOf(jTable3.getValueAt(i, 4));
+                    String getLine1 = String.valueOf(AddressTable.getValueAt(i, 2));
+                    String getLine2 = String.valueOf(AddressTable.getValueAt(i, 3));
+                    String getCity = String.valueOf(AddressTable.getValueAt(i, 4));
 
                     if (getLine1.equals(line1) && getLine2.equals(line2) && getCity.equals(city)) {
                         JOptionPane.showMessageDialog(this, "Address already added", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1185,23 +1214,23 @@ public class EmpReg extends javax.swing.JDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_addressAddBtnActionPerformed
 
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+    private void addressUpdateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addressUpdateBtnActionPerformed
 
-        int row = jTable3.getSelectedRow();
+        int row = AddressTable.getSelectedRow();
 
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a address to update", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
 
-            String id = String.valueOf(jTable3.getValueAt(row, 1));
+            String id = String.valueOf(AddressTable.getValueAt(row, 1));
 
             try {
-                String line1 = jTextField11.getText();
-                String line2 = jTextField12.getText();
-                String city = String.valueOf(jComboBox5.getSelectedItem());
-                String empid = String.valueOf(jComboBox6.getSelectedItem());
+                String line1 = line_1.getText();
+                String line2 = line_2.getText();
+                String city = String.valueOf(cityComboboxAtAdress.getSelectedItem());
+                String empid = String.valueOf(employeeAtAddressView.getSelectedItem());
 
                 if (line1.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Please enter address line 1", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1215,11 +1244,11 @@ public class EmpReg extends javax.swing.JDialog {
 
                     boolean isFound = false;
 
-                    for (int i = 0; i < jTable3.getRowCount(); i++) {
+                    for (int i = 0; i < AddressTable.getRowCount(); i++) {
 
-                        String getLine1 = String.valueOf(jTable3.getValueAt(i, 2));
-                        String getLine2 = String.valueOf(jTable3.getValueAt(i, 3));
-                        String getCity = String.valueOf(jTable3.getValueAt(i, 4));
+                        String getLine1 = String.valueOf(AddressTable.getValueAt(i, 2));
+                        String getLine2 = String.valueOf(AddressTable.getValueAt(i, 3));
+                        String getCity = String.valueOf(AddressTable.getValueAt(i, 4));
 
                         if (getLine1.equals(line1) && getLine2.equals(line2) && getCity.equals(city)) {
                             JOptionPane.showMessageDialog(this, "Address already added", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1244,11 +1273,11 @@ public class EmpReg extends javax.swing.JDialog {
 
         }
 
-    }//GEN-LAST:event_jButton8ActionPerformed
+    }//GEN-LAST:event_addressUpdateBtnActionPerformed
 
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+    private void AddressDelBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddressDelBtnActionPerformed
 
-        int row = jTable3.getSelectedRow();
+        int row = AddressTable.getSelectedRow();
 
         if (row == -1) {
             JOptionPane.showMessageDialog(this, "Please select a address to delete", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -1256,7 +1285,7 @@ public class EmpReg extends javax.swing.JDialog {
 
             try {
 
-                String id = String.valueOf(jTable3.getValueAt(row, 1));
+                String id = String.valueOf(AddressTable.getValueAt(row, 1));
 
                 MySQL.executeIUD("DELETE FROM `employee_address` WHERE `id` ='" + id + "' ");
 
@@ -1268,67 +1297,105 @@ public class EmpReg extends javax.swing.JDialog {
                 e.printStackTrace();
             }
         }
-    }//GEN-LAST:event_jButton9ActionPerformed
+    }//GEN-LAST:event_AddressDelBtnActionPerformed
 
-    private void jTable3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable3MouseClicked
+    private void AddressTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AddressTableMouseClicked
+        int row = AddressTable.getSelectedRow();
 
-        int row = jTable3.getSelectedRow();
+        if (row != -1) {
+            line_1.setText(String.valueOf(AddressTable.getValueAt(row, 2)));
+            line_2.setText(String.valueOf(AddressTable.getValueAt(row, 3)));
+            cityComboboxAtAdress.setSelectedItem(String.valueOf(AddressTable.getValueAt(row, 4)));
 
-        jTextField11.setText(String.valueOf(jTable3.getValueAt(row, 2)));
-        jTextField12.setText(String.valueOf(jTable3.getValueAt(row, 3)));
-        jComboBox5.setSelectedItem(String.valueOf(jTable3.getValueAt(row, 4)));
-        jComboBox6.setSelectedItem(String.valueOf(jTable3.getValueAt(row, 0)));
-        jComboBox6.setEditable(false);
+            isProgrammaticChange = true;
+            employeeAtAddressView.setSelectedItem(String.valueOf(AddressTable.getValueAt(row, 0)));
+            isProgrammaticChange = false;
+        }
 
-    }//GEN-LAST:event_jTable3MouseClicked
+    }//GEN-LAST:event_AddressTableMouseClicked
 
-    private void jComboBox6ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox6ItemStateChanged
-        // Temployee selection for adress
-        test4empload();
-    }//GEN-LAST:event_jComboBox6ItemStateChanged
+    private void employeeAtAddressViewItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_employeeAtAddressViewItemStateChanged
 
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        if (!isProgrammaticChange && isUserTriggered && evt.getStateChange() == ItemEvent.SELECTED) {
+            empload();
+        }
+ 
+    }//GEN-LAST:event_employeeAtAddressViewItemStateChanged
+
+    private void ClearBtnAtAdreesViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearBtnAtAdreesViewActionPerformed
         // TODO add your handling code here:
         reset();
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_ClearBtnAtAdreesViewActionPerformed
 
-    private void jComboBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox6ActionPerformed
+    private void employeeAtAddressViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeeAtAddressViewActionPerformed
         // TODO add your handling code here:
-        test4empload();
-    }//GEN-LAST:event_jComboBox6ActionPerformed
 
-    private void test4empload() {
+    }//GEN-LAST:event_employeeAtAddressViewActionPerformed
 
-        try {
-            int empid = (Integer) jComboBox6.getSelectedItem();
-            jTextField11.setText(String.valueOf(jTable3.getValueAt(empid, 2)));
-            jTextField12.setText(String.valueOf(jTable3.getValueAt(empid, 3)));
-            jComboBox5.setSelectedItem(String.valueOf(jTable3.getValueAt(empid, 4)));
+    private void passwwwrdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwwwrdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwwwrdActionPerformed
 
-        } catch (Exception e) {
+    private void confPswrdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confPswrdActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_confPswrdActionPerformed
+
+    private void empload() {
+        
+    try {
+        
+        String selectedEmployee = (String) employeeAtAddressView.getSelectedItem();
+
+        DefaultTableModel model = (DefaultTableModel) AddressTable.getModel();
+        boolean employeeFound = false;
+        for (int row = 0; row < model.getRowCount(); row++) {
+            String tableEmployeeName = String.valueOf(model.getValueAt(row, 0));
+
+            if (tableEmployeeName.equals(selectedEmployee)) {
+                employeeFound = true;
+                line_1.setText(String.valueOf(model.getValueAt(row, 2)));
+                line_2.setText(String.valueOf(model.getValueAt(row, 3)));
+                cityComboboxAtAdress.setSelectedItem(String.valueOf(model.getValueAt(row, 4)));
+                break;
+            }
         }
+
+        // Show message only for user-triggered events
+        if (!employeeFound && isUserTriggered) {
+            JOptionPane.showMessageDialog(this, "Selected Employee is not yet Registered in the Table", "Warning", JOptionPane.WARNING_MESSAGE);
+            line_1.setText("");
+            line_2.setText("");
+            cityComboboxAtAdress.setSelectedItem("Select");
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
+
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddressDelBtn;
+    private javax.swing.JTable AddressTable;
+    private javax.swing.JButton ClearBtnAtAdreesView;
+    private javax.swing.JButton addressAddBtn;
+    private javax.swing.JButton addressUpdateBtn;
+    private javax.swing.JComboBox<String> cityComboboxAtAdress;
+    private javax.swing.JTextField confPswrd;
+    private javax.swing.JComboBox<String> employeeAtAddressView;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JComboBox<String> jComboBox4;
-    private javax.swing.JComboBox<String> jComboBox5;
-    private javax.swing.JComboBox<String> jComboBox6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1357,20 +1424,14 @@ public class EmpReg extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JPasswordField jPasswordField3;
-    private javax.swing.JPasswordField jPasswordField4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
-    private javax.swing.JTable jTable3;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
@@ -1379,9 +1440,14 @@ public class EmpReg extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTextField jTextField8;
     private javax.swing.JTextField jTextField9;
+    private javax.swing.JTextField line_1;
+    private javax.swing.JTextField line_2;
+    private javax.swing.JTextField passwwwrd;
+    private javax.swing.JTextField pswrd;
     // End of variables declaration//GEN-END:variables
 
     private void reset() {
+        isUserTriggered = false;
         jTextField1.setText("");
         jTextField2.setText("");
         jTextField3.setText("");
@@ -1392,18 +1458,19 @@ public class EmpReg extends javax.swing.JDialog {
         jTextField8.setText("");
         jTextField9.setText("");
         jTextField10.setText("");
-        jTextField11.setText("");
-        jTextField12.setText("");
-        jPasswordField1.setText("");
+        line_1.setText("");
+        line_2.setText("");
+        pswrd.setText("");
 
-        jPasswordField3.setText("");
-        jPasswordField4.setText("");
+        passwwwrd.setText("");
+        confPswrd.setText("");
         jComboBox1.setSelectedIndex(0);
         jComboBox2.setSelectedIndex(0);
         jComboBox3.setSelectedIndex(0);
         jComboBox4.setSelectedIndex(0);
-        jComboBox5.setSelectedIndex(0);
-        jComboBox6.setSelectedIndex(0);
+        cityComboboxAtAdress.setSelectedIndex(0);
+        employeeAtAddressView.setSelectedIndex(0);
+        isUserTriggered = true;
 
         //jTextField2.setEditable(true);
     }

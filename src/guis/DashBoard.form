@@ -47,7 +47,7 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="c0" red="ff" type="rgb"/>
+          <Color blue="0" green="a7" red="ff" type="rgb"/>
         </Property>
       </Properties>
 
@@ -168,6 +168,9 @@
               <Image iconType="3" name="/resources/icons8-employees-50.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Manage Employees"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
@@ -182,6 +185,9 @@
               <Image iconType="3" name="/resources/icons8-customer-50.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Manage Customers"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
@@ -196,6 +202,9 @@
               <Image iconType="3" name="/resources/icons8-supplier-48.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Manage Suppliers"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
@@ -210,6 +219,9 @@
               <Image iconType="3" name="/resources/icons8-stock-50.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="    Stock"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
           </Properties>
           <Events>
@@ -225,6 +237,9 @@
               <Image iconType="3" name="/resources/icons8-note-50.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Good Received Note"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton6ActionPerformed"/>
@@ -239,6 +254,9 @@
               <Image iconType="3" name="/resources/icons8-product-50.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="        Product"/>
+            <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+              <Color id="Hand Cursor"/>
+            </Property>
             <Property name="horizontalAlignment" type="int" value="2"/>
           </Properties>
           <Events>

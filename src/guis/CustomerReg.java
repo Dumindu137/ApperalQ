@@ -97,7 +97,7 @@ public class CustomerReg extends javax.swing.JDialog {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(255, 192, 0));
+        jButton3.setBackground(new java.awt.Color(255, 167, 0));
         jButton3.setText("Register");
         jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {

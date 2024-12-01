@@ -90,7 +90,7 @@ public class Suppliers extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 192, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 167, 0));
 
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         jLabel1.setText("Suppliers");

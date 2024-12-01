@@ -56,7 +56,7 @@ public class DashBoard extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(772, 634));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 192, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 167, 0));
 
         jLabel2.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         jLabel2.setText("Apparell Q Dashboard");
@@ -98,6 +98,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-employees-50.png"))); // NOI18N
         jButton1.setText("Manage Employees");
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -107,6 +108,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-customer-50.png"))); // NOI18N
         jButton2.setText("Manage Customers");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -116,6 +118,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton3.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-supplier-48.png"))); // NOI18N
         jButton3.setText("Manage Suppliers");
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -125,6 +128,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton5.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-stock-50.png"))); // NOI18N
         jButton5.setText("    Stock");
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,6 +139,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton6.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-note-50.png"))); // NOI18N
         jButton6.setText("Good Received Note");
+        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -144,6 +149,7 @@ public class DashBoard extends javax.swing.JFrame {
         jButton7.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-product-50.png"))); // NOI18N
         jButton7.setText("        Product");
+        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
