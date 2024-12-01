@@ -18,16 +18,30 @@ public class DashBoard extends javax.swing.JFrame {
      * @param fName
      * @param lName
      */
+    private static String firstName = "";
+    private static String lastName = "";
+
     public DashBoard(String fName, String lName) {
         initComponents();
-        jLabel4.setText(fName + " " + lName);
+        firstName = fName;
+        lastName = lName;
+        updateUserName();
 
     }
 
     public DashBoard() {
 
         initComponents();
+        updateUserName();
 
+    }
+
+    private void updateUserName() {
+        if (!firstName.isEmpty() && !lastName.isEmpty()) {
+            jLabel4.setText(firstName + " " + lastName);
+        } else {
+            jLabel4.setText("Welcome, Guest");
+        }
     }
 
     /**

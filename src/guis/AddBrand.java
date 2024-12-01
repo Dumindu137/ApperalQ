@@ -11,12 +11,13 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
+import java.awt.Dialog;
 
 /**
  *
  * @author mypc
  */
-public class AddBrand extends javax.swing.JFrame {
+public class AddBrand extends javax.swing.JDialog {
 
     private static HashMap<String, String> CompanyMap = new HashMap<>();
 
@@ -24,9 +25,11 @@ public class AddBrand extends javax.swing.JFrame {
      * Creates new form AddBrand
      */
     public AddBrand() {
+        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         initComponents();
         loadCompanies();
         companytojCombobox();
+        loadBrands();
 
     }
 
@@ -55,7 +58,7 @@ public class AddBrand extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel9 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        brandcombobox = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
@@ -160,16 +163,16 @@ public class AddBrand extends javax.swing.JFrame {
         jPanel1.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 120, 129, 30));
 
         jLabel9.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
-        jLabel9.setText("Company");
+        jLabel9.setText("Brand");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(32, 170, -1, -1));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox2.addMouseListener(new java.awt.event.MouseAdapter() {
+        brandcombobox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        brandcombobox.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jComboBox2MouseClicked(evt);
+                brandcomboboxMouseClicked(evt);
             }
         });
-        jPanel1.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 160, 32));
+        jPanel1.add(brandcombobox, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 170, 160, 32));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -218,7 +221,6 @@ public class AddBrand extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void companytojCombobox() {
-        //change to raido buttons
         try {
 
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `company`");
@@ -238,7 +240,7 @@ public class AddBrand extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadCompanies() {
 
         try {
@@ -247,7 +249,7 @@ public class AddBrand extends javax.swing.JFrame {
                     + "ON `company`.`id` = `brand`.`company_id`");
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            
+
             model.setRowCount(0);
 
             while (resultSet.next()) {
@@ -256,11 +258,33 @@ public class AddBrand extends javax.swing.JFrame {
                 vector.add(resultSet.getString("name"));
                 vector.add(resultSet.getString("hotline"));
                 vector.add(resultSet.getString("brand.name"));
-                
 
                 model.addRow(vector);
 
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadBrands() {
+
+        try {
+
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `brand`");
+
+            Vector<String> vector = new Vector<>();
+            vector.add("Select");
+
+            while (resultSet.next()) {
+                vector.add(resultSet.getString("name"));
+                CompanyMap.put(resultSet.getString("name"), resultSet.getString("id"));
+            }
+
+            DefaultComboBoxModel model = new DefaultComboBoxModel(vector);
+            brandcombobox.setModel(model);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -282,8 +306,9 @@ public class AddBrand extends javax.swing.JFrame {
 
         jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 1)));
         jTextField2.setText(String.valueOf(jTable1.getValueAt(row, 2)));
+        brandcombobox.setSelectedItem(String.valueOf(jTable1.getValueAt(row, 3)));
 
-        
+
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -384,13 +409,12 @@ public class AddBrand extends javax.swing.JFrame {
         // add brand:
         String bName = jTextField3.getText();
         String company = String.valueOf(jComboBox1.getSelectedItem());
-        
 
         if (bName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter brand name", "Warning", JOptionPane.WARNING_MESSAGE);
         } else if (company.equals("Select")) {
             JOptionPane.showMessageDialog(this, "Must select a company", "Warning", JOptionPane.WARNING_MESSAGE);
-        }else {
+        } else {
 
             try {
 
@@ -416,13 +440,13 @@ public class AddBrand extends javax.swing.JFrame {
 
     private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
         // TODO add your handling code here:
-        
+
 
     }//GEN-LAST:event_jComboBox1MouseClicked
 
-    private void jComboBox2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox2MouseClicked
+    private void brandcomboboxMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_brandcomboboxMouseClicked
         // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2MouseClicked
+    }//GEN-LAST:event_brandcomboboxMouseClicked
 
     /**
      * @param args the command line arguments
@@ -460,12 +484,12 @@ public class AddBrand extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> brandcombobox;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -484,16 +508,15 @@ public class AddBrand extends javax.swing.JFrame {
     private void clear() {
         jTextField1.setText("");
         jTextField2.setText("");
+        brandcombobox.setSelectedItem("Select");
         loadCompanies();
-       
 
     }
-    
+
     private void clear2() {
         jTextField3.setText("");
         jComboBox1.setSelectedIndex(0);
         loadCompanies();
-        
 
     }
 }

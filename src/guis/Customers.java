@@ -5,12 +5,10 @@
 package guis;
 
 import com.formdev.flatlaf.FlatClientProperties;
-import java.lang.System.Logger.Level;
-import java.security.Timestamp;
+
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Vector;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -259,7 +257,6 @@ public class Customers extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyReleased
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        // TODO add your handling code here:
         int row = jTable1.getSelectedRow();
 
         String mobile = String.valueOf(jTable1.getValueAt(row, 0));
@@ -269,13 +266,15 @@ public class Customers extends javax.swing.JFrame {
 
         if (evt.getClickCount() == 2) {
             try {
-
-                ResultSet resultSet = MySQL.executeSearch("SELECT COUNT(id) FROM `invoice` WHERE `customer_mobile` = '" + mobile + "'");
+                ResultSet resultSet = MySQL.executeSearch(
+                        "SELECT COUNT(id) AS invoice_count FROM `invoice` WHERE `customer_mobile` = '" + mobile + "'");
 
                 if (resultSet.next()) {
-                    jLabel5.setText(resultSet.getString(1));
+                    int count = resultSet.getInt("invoice_count");
+                    jLabel5.setText(String.valueOf(count));
+                } else {
+                    jLabel5.setText("0");
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -285,7 +284,8 @@ public class Customers extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
         reset();
-        loadCustomers("first_name", "ASC", "07");
+
+        loadCustomers("first_name", "ASC", jTextField1.getText());
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
@@ -294,7 +294,6 @@ public class Customers extends javax.swing.JFrame {
             JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
             JasperPrint report = JasperFillManager.fillReport("src/reports/ReportCustomer.jasper", null, dataSource);
             JasperViewer.viewReport(report, false);
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -363,6 +362,7 @@ public class Customers extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void reset() {
+        jLabel5.setText("0");
         jTextField1.setText("");
         jTextField1.grabFocus();
         jTextField1.setEditable(true);
