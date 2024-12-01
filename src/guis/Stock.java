@@ -28,65 +28,51 @@ public class Stock extends javax.swing.JFrame {
     }
 
     private void loadStock() {
-
         try {
-
-            String query = "SELECT * FROM `stock` INNER JOIN `product`"
-                    + "ON `stock`.`product_id` = `product`.`id` "
+            String query = "SELECT * FROM `stock` INNER JOIN `product` ON `stock`.`product_id` = `product`.`id` "
                     + "INNER JOIN `brand` ON `brand`.`id` = `product`.`brand_id` ";
 
-            int row = jTable2.getSelectedRow();
+            String whereClause = "";
 
+            int row = jTable2.getSelectedRow();
             if (row != -1) {
                 String pid = String.valueOf(jTable2.getValueAt(row, 0));
-                query += "WHERE `stock`.`product_id` = '" + pid + "' ";
-            }
-
-            if (query.contains("WHERE")) {
-                query += "AND ";
-            } else {
-                query += "WHERE ";
+                whereClause = "WHERE `stock`.`product_id` = '" + pid + "' ";
             }
 
             double min_price = 0;
             double max_price = 0;
-
             if (!jFormattedTextField1.getText().isEmpty()) {
                 min_price = Double.parseDouble(jFormattedTextField1.getText());
             }
-
             if (!jFormattedTextField2.getText().isEmpty()) {
                 max_price = Double.parseDouble(jFormattedTextField2.getText());
             }
 
             if (min_price > 0 && max_price == 0) {
-                query += "`stock`.`price` > '" + min_price + "' ";
+                whereClause += "AND `stock`.`price` > " + min_price + " ";
             } else if (min_price == 0 && max_price > 0) {
-                query += "`stock`.`price` < '" + max_price + "' ";
+                whereClause += "AND `stock`.`price` < " + max_price + " ";
             } else if (min_price > 0 && max_price > 0) {
-                query += "`stock`.`price` > '" + min_price + "' AND `stock`.`price` <  '" + max_price + "'";
+                whereClause += "AND `stock`.`price` BETWEEN " + min_price + " AND " + max_price + " ";
             }
 
-            //exp
-            Date start = null;
-            Date end = null;
-
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-
             if (jDateChooser1.getDate() != null) {
-                start = jDateChooser1.getDate();
-                query += "`stock`.`exp` > '" + format.format(start) + "' AND";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String startDate = format.format(jDateChooser1.getDate());
+                whereClause += "AND `stock`.`mfd` > '" + startDate + "' ";
             }
 
             if (jDateChooser2.getDate() != null) {
-                end = jDateChooser2.getDate();
-                query += "`stock`.`exp` < '" + format.format(end) + "' ";
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String endDate = format.format(jDateChooser2.getDate());
+                whereClause += "AND `stock`.`mfd` < '" + endDate + "' ";
             }
+
+            query += whereClause;
 
             String sort = String.valueOf(jComboBox2.getSelectedItem());
             query += "ORDER BY ";
-            query = query.replace("WHERE ORDER BY ", "ORDER BY ");
-            query = query.replace("AND ORDER BY ", "ORDER BY ");
 
             if (sort.equals("Stock ID ASC")) {
                 query += "`stock`.`id` ASC";
@@ -97,12 +83,8 @@ public class Stock extends javax.swing.JFrame {
             } else if (sort.equals("Product ID DESC")) {
                 query += "`product`.`id` DESC";
             } else if (sort.equals("Brand ASC")) {
-                query += "`brand`.`id` ASC";
-            } else if (sort.equals("Brand DESC")) {
-                query += "`brand`.`id` DESC";
-            } else if (sort.equals("Name ASC")) {
                 query += "`brand`.`name` ASC";
-            } else if (sort.equals("Name DESC")) {
+            } else if (sort.equals("Brand DESC")) {
                 query += "`brand`.`name` DESC";
             } else if (sort.equals("Selling Price ASC")) {
                 query += "`stock`.`price` ASC";
@@ -115,9 +97,8 @@ public class Stock extends javax.swing.JFrame {
             }
 
             ResultSet resultSet = MySQL.executeSearch(query);
-
             DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            model.setRowCount(0);
+            model.setRowCount(0); // Clear the table before adding new data
 
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
@@ -126,16 +107,15 @@ public class Stock extends javax.swing.JFrame {
                 vector.add(resultSet.getString("brand.name"));
                 vector.add(resultSet.getString("product.name"));
                 vector.add(resultSet.getString("stock.price"));
-                vector.add(resultSet.getString("qty"));
-                vector.add(resultSet.getString("mfd"));
-                vector.add(resultSet.getString("exp"));
+                vector.add(resultSet.getString("stock.qty"));
+                vector.add(resultSet.getString("stock.mfd"));
+
                 model.addRow(vector);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -254,6 +234,11 @@ public class Stock extends javax.swing.JFrame {
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setText("Clear All");
         jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons8-dashboard-24.png"))); // NOI18N
         jLabel13.setText("Dashboard");
@@ -293,7 +278,7 @@ public class Stock extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -316,7 +301,7 @@ public class Stock extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(jLabel13))
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -342,7 +327,7 @@ public class Stock extends javax.swing.JFrame {
                             .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(0, 10, Short.MAX_VALUE))
         );
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -372,16 +357,16 @@ public class Stock extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 316, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -390,14 +375,14 @@ public class Stock extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -429,7 +414,7 @@ public class Stock extends javax.swing.JFrame {
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
 
-        
+
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jLabel13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel13MouseClicked
@@ -438,6 +423,13 @@ public class Stock extends javax.swing.JFrame {
         em.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel13MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        jFormattedTextField1.setText("0");
+        jFormattedTextField2.setText("0");
+        loadStock();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

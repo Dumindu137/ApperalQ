@@ -20,12 +20,13 @@ public class SupReg extends javax.swing.JDialog {
 
     private static HashMap<String, String> CompanyMap = new HashMap<>();
 
-
-    /**
+    private Suppliers suppliers;
+  
+    /** 
      * Creates new form SupReg
      */
-    public SupReg(java.awt.Frame parent , boolean modal) {
-        super(parent,modal);
+    public SupReg(java.awt.Frame parent, boolean modal) {
+       super(parent, modal);
         initComponents();
         loadSuppliers("first_name", "ASC", "");
         loadCompany();
@@ -98,9 +99,9 @@ public class SupReg extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        regbtn = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        updateBtn = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -139,12 +140,12 @@ public class SupReg extends javax.swing.JDialog {
             }
         });
 
-        jButton3.setBackground(new java.awt.Color(255, 167, 0));
-        jButton3.setText("Register");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        regbtn.setBackground(new java.awt.Color(255, 167, 0));
+        regbtn.setText("Register");
+        regbtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        regbtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                regbtnActionPerformed(evt);
             }
         });
 
@@ -157,11 +158,11 @@ public class SupReg extends javax.swing.JDialog {
             }
         });
 
-        jButton4.setText("Update");
-        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        updateBtn.setText("Update");
+        updateBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        updateBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                updateBtnActionPerformed(evt);
             }
         });
 
@@ -199,9 +200,9 @@ public class SupReg extends javax.swing.JDialog {
                                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(28, 28, 28))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(regbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10))
@@ -237,9 +238,9 @@ public class SupReg extends javax.swing.JDialog {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(41, 41, 41)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(regbtn, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(updateBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(41, Short.MAX_VALUE))
         );
 
@@ -291,6 +292,7 @@ public class SupReg extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+    
         AddBrand addb = new AddBrand();
         addb.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -311,7 +313,7 @@ public class SupReg extends javax.swing.JDialog {
 
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void regbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regbtnActionPerformed
         // register
 
         String mobile = jTextField2.getText();
@@ -352,7 +354,11 @@ public class SupReg extends javax.swing.JDialog {
                             + "VALUES ('" + mobile + "','" + fname + "','" + lname + "','" + email + "','" + CompanyMap.get(company) + "')");
                     reset();
                     JOptionPane.showMessageDialog(this, "Supplier Registered Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
-
+                    
+                    if (suppliers != null) {
+                suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
+            }
+                    
                 }
 
             } catch (Exception e) {
@@ -360,9 +366,9 @@ public class SupReg extends javax.swing.JDialog {
             }
 
         }
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_regbtnActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void updateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateBtnActionPerformed
         // update bt
 
         String mobile = jTextField2.getText();
@@ -392,7 +398,7 @@ public class SupReg extends javax.swing.JDialog {
                 ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier` WHERE `email` = '" + email + "' AND `mobile` !='" + mobile + "'");
 
                 if (resultSet.next()) {
-                    JOptionPane.showMessageDialog(this, "Email already used", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Email Or Mobile already used", "Warning", JOptionPane.WARNING_MESSAGE);
                 } else {
 
                     MySQL.executeIUD("UPDATE `supplier` SET "
@@ -400,13 +406,16 @@ public class SupReg extends javax.swing.JDialog {
                     reset();
                     JOptionPane.showMessageDialog(this, "Supplier Updated Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
 
+                           if (suppliers != null) {
+                suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
+            }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_updateBtnActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -420,13 +429,10 @@ public class SupReg extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -441,6 +447,8 @@ public class SupReg extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JButton regbtn;
+    private javax.swing.JButton updateBtn;
     // End of variables declaration//GEN-END:variables
 
     private void reset() {

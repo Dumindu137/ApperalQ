@@ -259,7 +259,7 @@
                 <Column editable="false" title="Mobile" type="java.lang.Object"/>
                 <Column editable="false" title="First Name" type="java.lang.Object"/>
                 <Column editable="false" title="Last Name" type="java.lang.Object"/>
-                <Column editable="true" title="Email" type="java.lang.Object"/>
+                <Column editable="false" title="Email" type="java.lang.Object"/>
                 <Column editable="false" title="Company" type="java.lang.Object"/>
               </Table>
             </Property>

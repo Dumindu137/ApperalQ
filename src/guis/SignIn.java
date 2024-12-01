@@ -157,6 +157,7 @@ public class SignIn extends javax.swing.JFrame {
                     String fName = resultSet.getString("first_name");
                     String lName = resultSet.getString("last_name");
 
+                    Grn grn = new Grn(fName, lName);
                     DashBoard home = new DashBoard(fName, lName);
                     home.setVisible(true);
                     this.dispose();
