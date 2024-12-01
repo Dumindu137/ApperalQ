@@ -29,8 +29,6 @@ public class Employees extends javax.swing.JFrame {
         loadEmployees();
     }
 
-    
-
     private void loadTypes() {
 
         try {
@@ -130,7 +128,7 @@ public class Employees extends javax.swing.JFrame {
         setTitle("Employees");
         setPreferredSize(new java.awt.Dimension(1075, 634));
 
-        jPanel1.setBackground(new java.awt.Color(255, 192, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 167, 0));
 
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         jLabel1.setText("Employees");
@@ -169,6 +167,7 @@ public class Employees extends javax.swing.JFrame {
         });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cashier", "Manager", "Supervisor", "Cleaning Staff", "Store Staff" }));
+        jComboBox1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -320,7 +319,7 @@ public class Employees extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        EmpReg empReg = new EmpReg(this,true);
+        EmpReg empReg = new EmpReg(this, true);
         empReg.setVisible(true);
         loadEmployees();
 
@@ -333,25 +332,39 @@ public class Employees extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        String firstName = jTextField1.getText();
-        String lastName = jTextField2.getText();
+        String firstName = jTextField1.getText().trim();
+        String lastName = jTextField2.getText().trim();
 
-        if (firstName.isEmpty() | lastName.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please Enter First Name", "Warning", JOptionPane.WARNING_MESSAGE);
+// Validation: Check if both inputs are empty
+        if (firstName.isEmpty() && lastName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter at least a name to search.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return; // Stop further execution
         }
 
         try {
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `employee`"
-                    + "INNER JOIN `employee_type` ON `employee`.`employee_type_id` = `employee_type`.`id`"
-                    + "INNER JOIN `gender` ON `employee`.`gender_id` = `gender`.`id`WHERE `employee`.`first_name` LIKE"
-                    + "'" + firstName + "' OR `employee`.`last_name` LIKE '" + lastName + "'");
+            // Construct the query with conditions based on which fields have text
+            String query = "SELECT * FROM `employee` "
+                    + "INNER JOIN `employee_type` ON `employee`.`employee_type_id` = `employee_type`.`id` "
+                    + "INNER JOIN `gender` ON `employee`.`gender_id` = `gender`.`id` "
+                    + "WHERE ";
+
+            if (!firstName.isEmpty()) {
+                query += "`employee`.`first_name` LIKE '%" + firstName + "%'";
+                if (!lastName.isEmpty()) {
+                    query += " OR ";
+                }
+            }
+            if (!lastName.isEmpty()) {
+                query += "`employee`.`last_name` LIKE '%" + lastName + "%'";
+            }
+
+            // Execute query
+            ResultSet resultSet = MySQL.executeSearch(query);
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-            model.setRowCount(0);
+            model.setRowCount(0); // Clear existing table rows
 
             while (resultSet.next()) {
-
                 Vector<String> vector = new Vector<>();
                 vector.add(resultSet.getString("email"));
                 vector.add(resultSet.getString("first_name"));
@@ -363,13 +376,15 @@ public class Employees extends javax.swing.JFrame {
                 vector.add(resultSet.getString("employee_type.name"));
 
                 model.addRow(vector);
-                jTextField1.setText("");
-                jTextField2.setText("");
-
             }
+
+            // Clear the input fields after a successful search
+            jTextField1.setText("");
+            jTextField2.setText("");
 
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "An error occurred while searching: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
 

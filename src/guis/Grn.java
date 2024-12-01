@@ -165,7 +165,7 @@ public class Grn extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
 
-        jPanel1.setBackground(new java.awt.Color(255, 192, 0));
+        jPanel1.setBackground(new java.awt.Color(255, 167, 0));
 
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 24)); // NOI18N
         jLabel1.setText("Good Received Note (GRN)");
@@ -232,6 +232,7 @@ public class Grn extends javax.swing.JFrame {
         jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         jButton2.setText("+");
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -443,6 +444,7 @@ public class Grn extends javax.swing.JFrame {
 
         jButton6.setFont(new java.awt.Font("Montserrat", 1, 12)); // NOI18N
         jButton6.setText("Clear All");
+        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
