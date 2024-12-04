@@ -5,14 +5,20 @@
 package guis;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import java.io.File;
+import java.io.InputStream;
 
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRTableModelDataSource;
 import net.sf.jasperreports.view.JasperViewer;
@@ -47,7 +53,6 @@ public class Customers extends javax.swing.JFrame {
                 vector.add(resultSet.getString("first_name"));
                 vector.add(resultSet.getString("last_name"));
                 vector.add(resultSet.getString("email"));
-                vector.add(resultSet.getString("points"));
 
                 model.addRow(vector);
             }
@@ -95,8 +100,9 @@ public class Customers extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton5 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Customers");
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
@@ -129,7 +135,7 @@ public class Customers extends javax.swing.JFrame {
         jLabel3.setText("Sort");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 141, -1, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name ASC", "Name DESC", "Points ASC", "Points DESC" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name ASC", "Name DESC", " " }));
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox1ItemStateChanged(evt);
@@ -180,11 +186,11 @@ public class Customers extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Mobile", "First Name", "Last Name", "Email", "Points"
+                "Mobile", "First Name", "Last Name", "Email"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, true, true
+                false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -207,6 +213,14 @@ public class Customers extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        jButton1.setText("Single Report ");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,7 +229,10 @@ public class Customers extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(11, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton5)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton5))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1042, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
@@ -226,7 +243,9 @@ public class Customers extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(50, Short.MAX_VALUE))
         );
 
@@ -264,7 +283,7 @@ public class Customers extends javax.swing.JFrame {
         jTextField1.setText(mobile);
         jTextField1.setEditable(false);
 
-        if (evt.getClickCount() == 2) {
+        if (evt.getClickCount() == 1) {
             try {
                 ResultSet resultSet = MySQL.executeSearch(
                         "SELECT COUNT(id) AS invoice_count FROM `invoice` WHERE `customer_mobile` = '" + mobile + "'");
@@ -288,15 +307,44 @@ public class Customers extends javax.swing.JFrame {
         loadCustomers("first_name", "ASC", jTextField1.getText());
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    public JasperPrint makeReport() {
+
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+        String headerImg;
+        try {
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalCustomer.jasper");
+            String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+            headerImg = img.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", headerImg);
+            params.put("status", String.valueOf(jComboBox1.getSelectedItem()));
+            params.put("reportDate", dateTime);
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+
+            return report;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+    
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // report
         try {
-            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
-            JasperPrint report = JasperFillManager.fillReport("src/reports/ReportCustomer.jasper", null, dataSource);
+            JasperPrint report = makeReport();
             JasperViewer.viewReport(report, false);
 
         } catch (Exception e) {
             e.printStackTrace();
+
         }
 
 
@@ -308,6 +356,66 @@ public class Customers extends javax.swing.JFrame {
         em.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel13MouseClicked
+
+    public JasperPrint makeSingleRowReport(DefaultTableModel singleRowModel) {
+        try {
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalCustomer.jasper");
+            String imgPath = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+            imgPath = imgPath.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", imgPath);
+            params.put("status", String.valueOf(jComboBox1.getSelectedItem()));
+            params.put("reportDate", dateTime);
+            
+
+            if (!jLabel5.getText().equals("null")){
+                params.put("count", String.valueOf(jLabel5.getText()));
+            }else{
+                params.put("count", "---");
+            }
+            
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(singleRowModel);
+            return JasperFillManager.fillReport(s, params, dataSource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            int selectedRow = jTable1.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a row to generate the report.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            DefaultTableModel originalModel = (DefaultTableModel) jTable1.getModel();
+            DefaultTableModel singleRowModel = new DefaultTableModel();
+
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                singleRowModel.addColumn(originalModel.getColumnName(col));
+            }
+
+            Object[] rowData = new Object[originalModel.getColumnCount()];
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                rowData[col] = originalModel.getValueAt(selectedRow, col);
+            }
+            singleRowModel.addRow(rowData);
+
+            JasperPrint report = makeSingleRowReport(singleRowModel);
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -345,6 +453,7 @@ public class Customers extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -375,10 +484,6 @@ public class Customers extends javax.swing.JFrame {
             loadCustomers("first_name", "ASC", jTextField1.getText());
         } else if (sort == 1) {
             loadCustomers("first_name", "DESC", jTextField1.getText());
-        } else if (sort == 2) {
-            loadCustomers("points", "ASC", jTextField1.getText());
-        } else if (sort == 3) {
-            loadCustomers("points", "DESC", jTextField1.getText());
         }
     }
 }
