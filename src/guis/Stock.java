@@ -4,14 +4,22 @@
  */
 package guis;
 
+import com.formdev.flatlaf.FlatClientProperties;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -23,6 +31,8 @@ public class Stock extends javax.swing.JFrame {
 
     public Stock() {
         initComponents();
+        jFormattedTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0.00");
+        jFormattedTextField2.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0.00");
 
         loadStock();
     }
@@ -134,7 +144,6 @@ public class Stock extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
         jLabel7 = new javax.swing.JLabel();
-        jFormattedTextField2 = new javax.swing.JFormattedTextField();
         jButton2 = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
@@ -144,11 +153,14 @@ public class Stock extends javax.swing.JFrame {
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jLabel13 = new javax.swing.JLabel();
+        jFormattedTextField2 = new javax.swing.JFormattedTextField();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
+        singleReport = new javax.swing.JButton();
+        FullReport = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Stock");
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
@@ -173,7 +185,6 @@ public class Stock extends javax.swing.JFrame {
         jLabel6.setText("Selling Price ");
 
         jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jFormattedTextField1.setText("0");
         jFormattedTextField1.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
         jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,10 +194,6 @@ public class Stock extends javax.swing.JFrame {
 
         jLabel7.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
         jLabel7.setText("TO");
-
-        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
-        jFormattedTextField2.setText("0");
-        jFormattedTextField2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
 
         jButton2.setFont(new java.awt.Font("Poppins", 1, 12)); // NOI18N
         jButton2.setText("Find");
@@ -249,6 +256,14 @@ public class Stock extends javax.swing.JFrame {
             }
         });
 
+        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jFormattedTextField2.setFont(new java.awt.Font("Poppins", 0, 12)); // NOI18N
+        jFormattedTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jFormattedTextField2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -269,15 +284,16 @@ public class Stock extends javax.swing.JFrame {
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jFormattedTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -353,21 +369,48 @@ public class Stock extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(jTable2);
 
+        singleReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        singleReport.setText("Single Report ");
+        singleReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                singleReportActionPerformed(evt);
+            }
+        });
+
+        FullReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        FullReport.setText("View Full Report");
+        FullReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        FullReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FullReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 1052, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(FullReport)))
+                .addGap(14, 14, 14))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FullReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -426,10 +469,154 @@ public class Stock extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        jFormattedTextField1.setText("0");
-        jFormattedTextField2.setText("0");
+        jFormattedTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0.00");
+        jFormattedTextField2.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "0.00");
         loadStock();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    public JasperPrint makeSingleRowReport(DefaultTableModel singleRowModel) {
+        try {
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalStock.jasper");
+            String imgPath = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+            imgPath = imgPath.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", imgPath);
+            params.put("reportDate", dateTime);
+            params.put("status", String.valueOf(jComboBox2.getSelectedItem()));
+
+            if (!jFormattedTextField1.getText().isEmpty()) {
+                params.put("SellPriceFrom", String.valueOf(jFormattedTextField1.getText()));
+            } else {
+                params.put("SellPriceFrom", "0.00");
+            }
+            if (!jFormattedTextField2.getText().isEmpty()) {
+                params.put("SellPriceTo", String.valueOf(jFormattedTextField2.getText()));
+            } else {
+                params.put("SellPriceTo", "0.00");
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if (jDateChooser1.getDate() != null) {
+                params.put("MfdFrom", dateFormat.format(jDateChooser1.getDate()));
+            } else {
+                params.put("MfdFrom", "----/--/--");
+            }
+
+            if (jDateChooser2.getDate() != null) {
+                params.put("MfdTo", dateFormat.format(jDateChooser2.getDate()));
+            } else {
+                params.put("MfdTo", "----/--/--");
+            }
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(singleRowModel);
+            return JasperFillManager.fillReport(s, params, dataSource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void singleReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_singleReportActionPerformed
+        try {
+            int selectedRow = jTable2.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a row to generate the report.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            DefaultTableModel originalModel = (DefaultTableModel) jTable2.getModel();
+            DefaultTableModel singleRowModel = new DefaultTableModel();
+
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                singleRowModel.addColumn(originalModel.getColumnName(col));
+            }
+
+            Object[] rowData = new Object[originalModel.getColumnCount()];
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                rowData[col] = originalModel.getValueAt(selectedRow, col);
+            }
+            singleRowModel.addRow(rowData);
+
+            JasperPrint report = makeSingleRowReport(singleRowModel);
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_singleReportActionPerformed
+
+    public JasperPrint makeReport() {
+
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+        String headerImg;
+        try {
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalStock.jasper");
+            String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+            headerImg = img.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", headerImg);
+            params.put("reportDate", dateTime);
+            params.put("status", String.valueOf(jComboBox2.getSelectedItem()));
+
+            if (!jFormattedTextField1.getText().isEmpty()) {
+                params.put("SellPriceFrom", String.valueOf(jFormattedTextField1.getText()));
+            } else {
+                params.put("SellPriceFrom", "0.00");
+            }
+            if (!jFormattedTextField2.getText().isEmpty()) {
+                params.put("SellPriceTo", String.valueOf(jFormattedTextField2.getText()));
+            } else {
+                params.put("SellPriceTo", "0.00");
+            }
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            if (jDateChooser1.getDate() != null) {
+                params.put("MfdFrom", dateFormat.format(jDateChooser1.getDate()));
+            } else {
+                params.put("MfdFrom", "----/--/--");
+            }
+
+            if (jDateChooser2.getDate() != null) {
+                params.put("MfdTo", dateFormat.format(jDateChooser2.getDate()));
+            } else {
+                params.put("MfdTo", "----/--/--");
+            }
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable2.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+
+            return report;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+    private void FullReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FullReportActionPerformed
+        // report
+        try {
+            JasperPrint report = makeReport();
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }//GEN-LAST:event_FullReportActionPerformed
+
+    private void jFormattedTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jFormattedTextField2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -467,6 +654,7 @@ public class Stock extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton FullReport;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -487,5 +675,6 @@ public class Stock extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable2;
+    private javax.swing.JButton singleReport;
     // End of variables declaration//GEN-END:variables
 }

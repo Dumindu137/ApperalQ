@@ -4,33 +4,44 @@
  */
 package guis;
 
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
  * @author mypc
  */
 public class Suppliers extends javax.swing.JFrame {
+
     private static HashMap<String, String> BrandMap = new HashMap<>();
-  /**
+
+    /**
      * Creates new form Suppliers
-     * 
+     *
      */
     public Suppliers() {
         initComponents();
         loadSuppliers("first_name", "ASC", "");
-        
+
     }
-    
+
     public void PaymentGrabFocus() {
         jTextField2.grabFocus();
     }
-    
+
     void loadSuppliers(String column, String orderby, String mobile) {
 
         try {
@@ -38,8 +49,8 @@ public class Suppliers extends javax.swing.JFrame {
             String query = "SELECT * FROM `supplier` INNER JOIN `company`"
                     + "ON `supplier`.`company_id` = `company`.`id` WHERE `mobile` LIKE '" + mobile + "%' ORDER BY `" + column + "` " + orderby + "";
 
-           ResultSet resultSet = MySQL.executeSearch(query);
-            
+            ResultSet resultSet = MySQL.executeSearch(query);
+
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
 
@@ -60,7 +71,6 @@ public class Suppliers extends javax.swing.JFrame {
 
     }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -85,8 +95,10 @@ public class Suppliers extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        singleReport = new javax.swing.JButton();
+        FullReport = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Suppliers");
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
@@ -234,6 +246,23 @@ public class Suppliers extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        singleReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        singleReport.setText("Single Report ");
+        singleReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                singleReportActionPerformed(evt);
+            }
+        });
+
+        FullReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        FullReport.setText("View Full Report");
+        FullReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        FullReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FullReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -241,7 +270,13 @@ public class Suppliers extends javax.swing.JFrame {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(FullReport)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -249,8 +284,12 @@ public class Suppliers extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FullReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
@@ -259,7 +298,7 @@ public class Suppliers extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        SupReg supreg = new SupReg(this,true);
+        SupReg supreg = new SupReg(this, true);
         supreg.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -268,7 +307,7 @@ public class Suppliers extends javax.swing.JFrame {
         int row = jTable1.getSelectedRow();
 
         jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 0)));
-        jTextField2.setEnabled(false);
+        jTextField2.setFocusable(false);
 
         /*if (evt.getClickCount() == 2) {
 
@@ -278,7 +317,6 @@ public class Suppliers extends javax.swing.JFrame {
                 this.dispose();
             }
         }*/
-
         try {
 
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `grn` INNER JOIN `grn_item`"
@@ -286,7 +324,7 @@ public class Suppliers extends javax.swing.JFrame {
 
             double total = 0;
 
-            HashMap<Long, Double> grns = new HashMap<>();
+            HashMap<String, Double> grns = new HashMap<>();
 
             while (resultSet.next()) {
 
@@ -296,10 +334,9 @@ public class Suppliers extends javax.swing.JFrame {
 
                 double itemTotal = qty * buyingPrice;
 
-                //total = total + itemTotal;
                 total += itemTotal;
 
-                grns.put(resultSet.getLong("grn.id"), resultSet.getDouble("grn.paid_amount"));
+                grns.put(resultSet.getString("grn.id"), resultSet.getDouble("grn.paid_amount"));
             }
 
             double totalPaid = 0;
@@ -311,7 +348,7 @@ public class Suppliers extends javax.swing.JFrame {
             }
 
             jLabel5.setText(String.valueOf(grns.size()));
-            jTextField2.setText(String.valueOf(total - totalPaid));
+            jTextField2.setText(String.valueOf(totalPaid - total ));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -323,7 +360,7 @@ public class Suppliers extends javax.swing.JFrame {
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         // TODO add your handling code here:
         search();
-        
+
     }//GEN-LAST:event_jComboBox1ItemStateChanged
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
@@ -338,11 +375,107 @@ public class Suppliers extends javax.swing.JFrame {
 
     private void jLabel13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel13MouseClicked
         // TODO add your handling code here:
-        
+
         DashBoard em = new DashBoard();
         em.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jLabel13MouseClicked
+
+    public JasperPrint makeSingleRowReport(DefaultTableModel singleRowModel) {
+        try {
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalSupplier.jasper");
+            String imgPath = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+            imgPath = imgPath.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", imgPath);
+            params.put("reportDate", dateTime);
+            params.put("status", String.valueOf(jComboBox1.getSelectedItem()));
+            params.put("pendingPay", String.valueOf(jTextField2.getText()));
+            params.put("grnCount", String.valueOf(jLabel5.getText()));
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(singleRowModel);
+            return JasperFillManager.fillReport(s, params, dataSource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void singleReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_singleReportActionPerformed
+        try {
+            int selectedRow = jTable1.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a row to generate the report.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            DefaultTableModel originalModel = (DefaultTableModel) jTable1.getModel();
+            DefaultTableModel singleRowModel = new DefaultTableModel();
+
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                singleRowModel.addColumn(originalModel.getColumnName(col));
+            }
+
+            Object[] rowData = new Object[originalModel.getColumnCount()];
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                rowData[col] = originalModel.getValueAt(selectedRow, col);
+            }
+            singleRowModel.addRow(rowData);
+
+            JasperPrint report = makeSingleRowReport(singleRowModel);
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_singleReportActionPerformed
+
+    public JasperPrint makeReport() {
+
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+        String headerImg;
+        try {
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalSupplier.jasper");
+            String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+            headerImg = img.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", headerImg);
+            params.put("reportDate", dateTime);
+            params.put("status", String.valueOf(jComboBox1.getSelectedItem()));
+            params.put("pendingPay", String.valueOf(jTextField2.getText()));
+            params.put("grnCount", String.valueOf(jLabel5.getText()));
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+
+            return report;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+    private void FullReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FullReportActionPerformed
+        // report
+        try {
+            JasperPrint report = makeReport();
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }//GEN-LAST:event_FullReportActionPerformed
 
 //    /**
 //     * @param args the command line arguments
@@ -380,6 +513,7 @@ public class Suppliers extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton FullReport;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBox1;
@@ -395,9 +529,10 @@ public class Suppliers extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton singleReport;
     // End of variables declaration//GEN-END:variables
 
-     private void reset() {
+    private void reset() {
         jTextField1.setText("");
         jTextField2.setText("");
         jComboBox1.setSelectedIndex(0);
