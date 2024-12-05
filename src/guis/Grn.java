@@ -5,6 +5,8 @@
 package guis;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +19,10 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import model.GRNItem;
 import model.MySQL;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -38,7 +44,7 @@ public class Grn extends javax.swing.JFrame {
         initComponents();
         generateGRNId(10, 50);
         loadSuppliers();
-        //jLabel3.setText(SignIn.getEmployeeEmail());
+        jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
 
         firstName = fName;
@@ -52,6 +58,7 @@ public class Grn extends javax.swing.JFrame {
         initComponents();
         generateGRNId(10, 50);
         loadSuppliers();
+        jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
         updateUserName();
 
@@ -61,7 +68,7 @@ public class Grn extends javax.swing.JFrame {
         if (!firstName.isEmpty() && !lastName.isEmpty()) {
             jLabel3.setText(firstName + " " + lastName);
         } else {
-            jLabel3.setText("Welcome, Guest");
+            jLabel3.setText("Welcome, Employee");
         }
     }
 
@@ -186,9 +193,8 @@ public class Grn extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Good Received Note");
-        setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 167, 0));
@@ -464,6 +470,7 @@ public class Grn extends javax.swing.JFrame {
         jLabel17.setText("Payment");
 
         jFormattedTextField4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+        jFormattedTextField4.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         jFormattedTextField4.setFont(new java.awt.Font("Poppins", 0, 14)); // NOI18N
         jFormattedTextField4.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -789,8 +796,49 @@ public class Grn extends javax.swing.JFrame {
         reset();
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    public JasperPrint makeReport() {
+
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+        String headerImg;
+        try {
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalGrn3.jasper");
+            String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+            headerImg = img.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", headerImg);
+            params.put("reportDate", dateTime);
+            params.put("total", String.valueOf(jLabel18.getText()));
+            params.put("payment", String.valueOf(jFormattedTextField4.getText()));
+            params.put("balance", String.valueOf(jLabel20.getText()));
+            params.put("employee", String.valueOf(jLabel3.getText()));
+
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+
+            return report;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        //report
+        try {
+            JasperPrint report = makeReport();
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
@@ -840,7 +888,6 @@ public class Grn extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void reset() {
-        jTextField1.setText("");
         jComboBox1.setSelectedItem("Select");
         jFormattedTextField2.setText("0.00");
         jTextField2.setText("");
