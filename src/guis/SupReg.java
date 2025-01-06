@@ -21,18 +21,28 @@ public class SupReg extends javax.swing.JDialog {
     private static HashMap<String, String> CompanyMap = new HashMap<>();
 
     private Suppliers suppliers;
-  
-    /** 
+    private SupReg supreg;
+
+    /**
      * Creates new form SupReg
      */
-    public SupReg(java.awt.Frame parent, boolean modal) {
-       super(parent, modal);
+    public SupReg(java.awt.Frame parent, boolean modal, Suppliers suppliers) {
+        super(parent, modal);
         initComponents();
         loadSuppliers("first_name", "ASC", "");
         loadCompany();
+        this.suppliers = suppliers;
+    }
+//for grn
+    public SupReg(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
+        initComponents();
+        loadSuppliers("first_name", "ASC", "");
+        loadCompany();
+
     }
 
-    private void loadCompany() {
+    public void loadCompany() {
         //change to raido buttons
         try {
 
@@ -54,7 +64,7 @@ public class SupReg extends javax.swing.JDialog {
         }
     }
 
-    private void loadSuppliers(String column, String orderby, String mobile) {
+    public void loadSuppliers(String column, String orderby, String mobile) {
 
         try {
 
@@ -292,8 +302,8 @@ public class SupReg extends javax.swing.JDialog {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-    
-        AddBrand addb = new AddBrand();
+
+        AddBrand addb = new AddBrand(null, true, this);
         addb.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -354,11 +364,11 @@ public class SupReg extends javax.swing.JDialog {
                             + "VALUES ('" + mobile + "','" + fname + "','" + lname + "','" + email + "','" + CompanyMap.get(company) + "')");
                     reset();
                     JOptionPane.showMessageDialog(this, "Supplier Registered Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
-                    
+
                     if (suppliers != null) {
-                suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
-            }
-                    
+                        suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
+                    }
+
                 }
 
             } catch (Exception e) {
@@ -406,9 +416,9 @@ public class SupReg extends javax.swing.JDialog {
                     reset();
                     JOptionPane.showMessageDialog(this, "Supplier Updated Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
 
-                           if (suppliers != null) {
-                suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
-            }
+                    if (suppliers != null) {
+                        suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

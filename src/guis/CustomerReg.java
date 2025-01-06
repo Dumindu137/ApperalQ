@@ -15,14 +15,16 @@ import model.MySQL;
  * @author mypc
  */
 public class CustomerReg extends javax.swing.JDialog {
-
+  private Customers customers;
     /**
      * Creates new form RegEmployee
      */
-    public CustomerReg(java.awt.Frame parent , boolean modal) {
+    public CustomerReg(java.awt.Frame parent , boolean modal,Customers customers) {
         super(parent, modal);
         initComponents();
         loadCustomers();
+        this.customers = customers;
+        
     }
 
     private void loadCustomers() {
@@ -299,6 +301,7 @@ public class CustomerReg extends javax.swing.JDialog {
                     JOptionPane.showMessageDialog(this, "Customer registerd Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
                     loadCustomers();
                     reset();
+                    customers.loadCustomers("first_name", "ASC", jTextField1.getText());
                 }
 
             } catch (Exception e) {
@@ -378,6 +381,8 @@ public class CustomerReg extends javax.swing.JDialog {
 
                     loadCustomers();
                     reset();
+                    customers.loadCustomers("first_name", "ASC", jTextField1.getText());
+                    
                 }
 
             } catch (Exception e) {

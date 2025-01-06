@@ -9,6 +9,7 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 import model.BrandModel;
 import model.MySQL;
+import model.StockModel;
 import model.productModel;
 
 /**
@@ -25,15 +26,14 @@ public class SelectProducts extends javax.swing.JFrame {
     public SelectProducts(java.awt.Frame parent, boolean modal, Billing billing) {
         initComponents();
         loadProducts();
-        this.billing =billing;
+        this.billing = billing;
     }
 
     private void loadProducts() {
 
         try {
 
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand`"
-                    + "ON `product`.`brand_id` = `brand`.`id`");
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand`ON `product`.`brand_id` = `brand`.`id`");
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
@@ -75,7 +75,7 @@ public class SelectProducts extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Product ID", "Product Name", "Brand ID", "Brand"
+                "Product ID", "Product Name", "Brand ", "Qty"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -100,11 +100,14 @@ public class SelectProducts extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(411, 411, 411)
                 .addComponent(jLabel1)
                 .addContainerGap(411, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 948, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -112,7 +115,8 @@ public class SelectProducts extends javax.swing.JFrame {
                 .addGap(0, 25, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 397, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -139,18 +143,20 @@ public class SelectProducts extends javax.swing.JFrame {
 
             String pid = String.valueOf(jTable1.getValueAt(row, 0));
             String pName = String.valueOf(jTable1.getValueAt(row, 1));
-            //int bId = Integer.parseInt(String.valueOf(jTable1.getValueAt(row, 2)));
             String bName = String.valueOf(jTable1.getValueAt(row, 3));
 
             productModel productmodel = new productModel();
             BrandModel brandmodel = new BrandModel();
+            StockModel stockmodel = new StockModel();
             productmodel.setId(pid);
             productmodel.setName(pName);
             brandmodel.setName(bName);
+            stockmodel.setQty(row);
 
-            billing.setSelectedProduct(productmodel,brandmodel);
+            billing.setSelectedProduct(productmodel, brandmodel);
 
             this.dispose();
+            billing.setQtyData();
         }
     }//GEN-LAST:event_jTable1MouseClicked
 

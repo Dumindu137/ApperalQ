@@ -19,17 +19,30 @@ import java.awt.Dialog;
  */
 public class AddBrand extends javax.swing.JDialog {
 
+    private SupReg supreg;
+    private AddProduct addproduct;
     private static HashMap<String, String> CompanyMap = new HashMap<>();
 
     /**
      * Creates new form AddBrand
      */
-    public AddBrand() {
+    public AddBrand(java.awt.Frame parent, boolean modal, SupReg supreg) {
         setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
         initComponents();
         loadCompanies();
         companytojCombobox();
         loadBrands();
+        this.supreg = supreg;
+
+    }
+
+    public AddBrand(java.awt.Frame parent, boolean modal, AddProduct addproduct) {
+        setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        initComponents();
+        loadCompanies();
+        companytojCombobox();
+        loadBrands();
+        this.addproduct = addproduct;
 
     }
 
@@ -343,6 +356,12 @@ public class AddBrand extends javax.swing.JDialog {
                     clear();
                     companytojCombobox();
                     JOptionPane.showMessageDialog(this, "Company Registered Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
+                    if (this.supreg != null) {
+                        supreg.loadSuppliers("first_name", "ASC", "");
+                        supreg.loadCompany();
+                    } else if (this.addproduct != null) {
+                        addproduct.loadBrand();
+                    }
 
                 }
 
@@ -390,6 +409,12 @@ public class AddBrand extends javax.swing.JDialog {
                         MySQL.executeIUD("UPDATE `company` SET `name`='" + cName + "',`hotline` = '" + hotline + "' WHERE `id` = '" + selectedId + "'");
                         clear();
                         JOptionPane.showMessageDialog(this, "Company Updated Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
+                        if (this.supreg != null) {
+                            supreg.loadSuppliers("first_name", "ASC", "");
+                            supreg.loadCompany();
+                        } else if (this.addproduct != null) {
+                            addproduct.loadBrand();
+                        }
 
                     }
 
@@ -428,6 +453,12 @@ public class AddBrand extends javax.swing.JDialog {
                             + "VALUES ('" + bName + "','" + CompanyMap.get(company) + "')");
                     clear2();
                     JOptionPane.showMessageDialog(this, "Brand Registered Successfully", "success", JOptionPane.INFORMATION_MESSAGE);
+                    if (this.supreg != null) {
+                        supreg.loadSuppliers("first_name", "ASC", "");
+                        supreg.loadCompany();
+                    } else if (this.addproduct != null) {
+                        addproduct.loadBrand();
+                    }
 
                 }
 
@@ -451,37 +482,6 @@ public class AddBrand extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddBrand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddBrand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddBrand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddBrand.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AddBrand().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> brandcombobox;

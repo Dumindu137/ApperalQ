@@ -26,6 +26,7 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class Suppliers extends javax.swing.JFrame {
 
+    private Suppliers suppliers;
     private static HashMap<String, String> BrandMap = new HashMap<>();
 
     /**
@@ -298,7 +299,7 @@ public class Suppliers extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        SupReg supreg = new SupReg(this, true);
+        SupReg supreg = new SupReg(null, true, this);
         supreg.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
