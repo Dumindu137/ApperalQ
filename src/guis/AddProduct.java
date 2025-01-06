@@ -4,13 +4,21 @@
  */
 package guis;
 
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.MySQL;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -108,8 +116,10 @@ public class AddProduct extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        singleReport = new javax.swing.JButton();
+        FullReport = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Products");
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
@@ -268,15 +278,44 @@ public class AddProduct extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTable1);
 
+        singleReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        singleReport.setText("Single Report ");
+        singleReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                singleReportActionPerformed(evt);
+            }
+        });
+
+        FullReport.setFont(new java.awt.Font("Montserrat", 0, 12)); // NOI18N
+        FullReport.setText("View Full Report");
+        FullReport.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        FullReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FullReportActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(FullReport)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(FullReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(singleReport, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -415,6 +454,97 @@ public class AddProduct extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_jLabel6MouseClicked
 
+    public JasperPrint makeSingleRowReport(DefaultTableModel singleRowModel) {
+        try {
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalProducts.jasper");
+            String imgPath = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+            imgPath = imgPath.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", imgPath);
+            params.put("reportDate", dateTime);
+            
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(singleRowModel);
+            return JasperFillManager.fillReport(s, params, dataSource);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    private void singleReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_singleReportActionPerformed
+        try {
+            int selectedRow = jTable1.getSelectedRow();
+
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a row to generate the report.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            DefaultTableModel originalModel = (DefaultTableModel) jTable1.getModel();
+            DefaultTableModel singleRowModel = new DefaultTableModel();
+
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                singleRowModel.addColumn(originalModel.getColumnName(col));
+            }
+
+            Object[] rowData = new Object[originalModel.getColumnCount()];
+            for (int col = 0; col < originalModel.getColumnCount(); col++) {
+                rowData[col] = originalModel.getValueAt(selectedRow, col);
+            }
+            singleRowModel.addRow(rowData);
+
+            JasperPrint report = makeSingleRowReport(singleRowModel);
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_singleReportActionPerformed
+
+      public JasperPrint makeReport() {
+
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+
+        String headerImg;
+        try {
+            InputStream s = this.getClass().getResourceAsStream("/reports/apperalProducts.jasper");
+            String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+            headerImg = img.replace("\\", "/");
+
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("img", headerImg);
+            params.put("reportDate", dateTime);
+           
+            JRTableModelDataSource dataSource = new JRTableModelDataSource(jTable1.getModel());
+
+            JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+
+            return report;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+      
+    private void FullReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FullReportActionPerformed
+        // report
+        try {
+            JasperPrint report = makeReport();
+            JasperViewer.viewReport(report, false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+    }//GEN-LAST:event_FullReportActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -451,6 +581,7 @@ public class AddProduct extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton FullReport;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -467,6 +598,7 @@ public class AddProduct extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JButton singleReport;
     // End of variables declaration//GEN-END:variables
 
     private void clear() {

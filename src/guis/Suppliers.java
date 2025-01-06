@@ -465,6 +465,7 @@ public class Suppliers extends javax.swing.JFrame {
         }
         return null;
     }
+    
     private void FullReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FullReportActionPerformed
         // report
         try {

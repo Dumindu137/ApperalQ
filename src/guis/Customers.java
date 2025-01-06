@@ -135,7 +135,7 @@ public class Customers extends javax.swing.JFrame {
         jLabel3.setText("Sort");
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(28, 141, -1, -1));
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name ASC", "Name DESC", " " }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Name ASC", "Name DESC" }));
         jComboBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jComboBox1ItemStateChanged(evt);
