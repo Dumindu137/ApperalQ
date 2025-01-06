@@ -38,7 +38,7 @@ public class Customers extends javax.swing.JFrame {
         jTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter Customer Mobile No");
     }
 
-    private void loadCustomers(String column, String orderby, String mobile) {
+    public void loadCustomers(String column, String orderby, String mobile) {
 
         try {
 
@@ -255,13 +255,13 @@ public class Customers extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        CustomerReg cusreg = new CustomerReg(this, true);
+        CustomerReg cusreg = new CustomerReg(null, true, this);
         cusreg.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        CustomerReg cusreg = new CustomerReg(this, true);
+        CustomerReg cusreg = new CustomerReg(null, true, this);
         cusreg.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 

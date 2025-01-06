@@ -56,7 +56,7 @@ public class Grn extends javax.swing.JFrame {
     public Grn() {
 
         initComponents();
-        generateGRNId(10, 50);
+        generateGRNId(5, 90);
         loadSuppliers();
         jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
@@ -629,7 +629,8 @@ public class Grn extends javax.swing.JFrame {
         try {
             String grnNumber = jTextField1.getText();
             String supplierMobile = String.valueOf(jComboBox1.getSelectedItem());
-            String employeeName = jLabel3.getText(); // Employee name displayed in jLabel3
+            String employeeName = jLabel3.getText();
+            
             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             String paidAmount = jFormattedTextField4.getText();
 
@@ -639,9 +640,11 @@ public class Grn extends javax.swing.JFrame {
                 // Fetch the employee email from the database using the name
                 ResultSet employeeResultSet = MySQL.executeSearch("SELECT email FROM employee WHERE CONCAT(first_name, ' ', last_name) = '" + employeeName + "'");
                 String employeeEmail = "";
+                
 
                 if (employeeResultSet.next()) {
                     employeeEmail = employeeResultSet.getString("email");
+                    
                 } else {
                     JOptionPane.showMessageDialog(this, "Employee not found in the database", "Error", JOptionPane.ERROR_MESSAGE);
                     return; // Exit if the employee email is not found
@@ -649,10 +652,10 @@ public class Grn extends javax.swing.JFrame {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-                // Insert into GRN table
-                MySQL.executeIUD("INSERT INTO `grn` VALUES('" + grnNumber + "','" + date + "','" + paidAmount + "','" + supplierMap.get(supplierMobile) + "','" + employeeEmail + "')");
+                // Insert to GRN table
+                MySQL.executeIUD("INSERT INTO `grn` VALUES('" + grnNumber + "','" + date + "','" + paidAmount + "','" + employeeEmail + "','" + supplierMap.get(supplierMobile) + "')");
 
-                // Iterate through GRN items
+                
                 for (GRNItem grnItem : grnItemMap.values()) {
 
                     ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `stock` WHERE "
@@ -663,14 +666,14 @@ public class Grn extends javax.swing.JFrame {
                     String sid = "";
 
                     if (resultSet.next()) {
-                        // Existing stock
+                        
                         sid = resultSet.getString("id");
 
                         String currentQty = resultSet.getString("qty");
                         String updatedQuantity = String.valueOf(Double.parseDouble(currentQty) + grnItem.getQty());
                         MySQL.executeIUD("UPDATE `stock` SET `qty` = '" + updatedQuantity + "' WHERE `id` = '" + sid + "'");
                     } else {
-                        // New stock
+                        
                         MySQL.executeIUD("INSERT INTO `stock`(`product_id`,`qty`,`price`,`mfd`) "
                                 + "VALUES('" + grnItem.getProductId() + "','" + grnItem.getQty() + "','" + grnItem.getSellingPrice() + "', "
                                 + "'" + sdf.format(grnItem.getMfd()) + "')");

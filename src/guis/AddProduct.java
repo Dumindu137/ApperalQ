@@ -43,7 +43,7 @@ public class AddProduct extends javax.swing.JFrame {
         loadBrand();
     }
 
-    private void loadBrand() {
+    public void loadBrand() {
         //change to raido buttons
         try {
 
@@ -119,7 +119,7 @@ public class AddProduct extends javax.swing.JFrame {
         singleReport = new javax.swing.JButton();
         FullReport = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Products");
         setPreferredSize(new java.awt.Dimension(1075, 634));
         setResizable(false);
@@ -339,7 +339,7 @@ public class AddProduct extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        AddBrand addb = new AddBrand();
+        AddBrand addb = new AddBrand(null, true, this);
         addb.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 

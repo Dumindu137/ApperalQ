@@ -959,7 +959,7 @@ public class EmpReg extends javax.swing.JDialog {
             } else if (password.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please enter your password", "Warning", JOptionPane.WARNING_MESSAGE);
             } else if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) {
-                JOptionPane.showMessageDialog(this, "Please enter minimum eight characters, at least one letter and one number", "Warning", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please enter minimum eight characters, at least one letter and one number", "Password Warning", JOptionPane.WARNING_MESSAGE);
             } else if (repassword.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Please confirm your password", "Warning", JOptionPane.WARNING_MESSAGE);
             } else if (!repassword.matches(password)) {
