@@ -61,6 +61,7 @@ public class Grn extends javax.swing.JFrame {
         jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
         updateUserName();
+        
 
     }
 
@@ -626,7 +627,8 @@ public class Grn extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
         // Save GRN button
-        try {
+        try 
+        {
             String grnNumber = jTextField1.getText();
             String supplierMobile = String.valueOf(jComboBox1.getSelectedItem());
             String employeeName = jLabel3.getText();
