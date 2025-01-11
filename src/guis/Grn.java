@@ -633,6 +633,7 @@ public class Grn extends javax.swing.JFrame {
 
             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             String paidAmount = jFormattedTextField4.getText();
+            String TotalAmount = jLabel18.getText();
 
             if (paidAmount.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Enter Payment Amount", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -652,7 +653,7 @@ public class Grn extends javax.swing.JFrame {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
                 // Insert to GRN table
-                MySQL.executeIUD("INSERT INTO `grn` VALUES('" + grnNumber + "','" + date + "','" + paidAmount + "','" + employeeEmail + "','" + supplierMap.get(supplierMobile) + "')");
+                MySQL.executeIUD("INSERT INTO `grn` VALUES('" + grnNumber + "','" + date + "','" + paidAmount + "','" + employeeEmail + "','" + supplierMap.get(supplierMobile) + "','" + TotalAmount + "')");
 
                 for (GRNItem grnItem : grnItemMap.values()) {
 
