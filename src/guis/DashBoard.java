@@ -286,7 +286,7 @@ public class DashBoard extends javax.swing.JFrame {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         // TODO add your handling code here:
-        Billing bill = new Billing();
+        Billing bill = new Billing(firstName, lastName);
         bill.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton8ActionPerformed

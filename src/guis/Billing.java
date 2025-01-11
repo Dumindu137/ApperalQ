@@ -5,6 +5,8 @@
 package guis;
 
 import com.formdev.flatlaf.FlatClientProperties;
+import java.io.File;
+import java.io.InputStream;
 import java.sql.ResultSet;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +22,10 @@ import model.InvoiceItemModel;
 import model.MySQL;
 
 import model.productModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -37,6 +43,7 @@ public class Billing extends javax.swing.JFrame {
 
     /**
      * Creates new form Billing
+     *
      * @param fName
      * @param lName
      */
@@ -46,22 +53,12 @@ public class Billing extends javax.swing.JFrame {
         loadPaymentMethods();
         jTextField3.setFocusable(false);
         totalField.setFocusable(false);
+        PaymentMethod.setEnabled(false);
         totalField.setText("0.00");
 
         firstName = fName;
         lastName = lName;
         updateUserName();
-    }
-
-    public Billing() {
-        initComponents();
-        generateInvoiceId(5, 300);
-        loadPaymentMethods();
-        jTextField3.setFocusable(false);
-        totalField.setFocusable(false);
-        totalField.setText("0.00");
-        updateUserName();
-
     }
 
     private void updateUserName() {
@@ -150,6 +147,7 @@ public class Billing extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Montserrat", 0, 14)); // NOI18N
         jLabel7.setText("TOTAL");
 
+        totalField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
         totalField.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         totalField.setFont(new java.awt.Font("Montserrat", 1, 18)); // NOI18N
 
@@ -532,10 +530,8 @@ public class Billing extends javax.swing.JFrame {
                 double price = resultSet.getDouble("price");
                 int lastRow = billTable.getRowCount() - 1;
                 if (lastRow >= 0) {
-                    billTable.setValueAt(price, lastRow, 4);
-                    calculateTotal();
-                } else {
-                    JOptionPane.showMessageDialog(this, "No rows in the table to set the price.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    billTable.setValueAt(String.format("%.2f", price), lastRow, 4);
+                    calculateTotal(lastRow); // Calculate total for this row
                 }
             } else {
                 JOptionPane.showMessageDialog(this, "No price found for the selected product.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -546,24 +542,16 @@ public class Billing extends javax.swing.JFrame {
         }
     }
 
-    public void calculateTotal() {
+    public void calculateTotal(int rowIndex) {
         try {
-            int lastRow = billTable.getRowCount() - 1;
-            if (lastRow >= 0) {
-                Object priceObj = billTable.getValueAt(lastRow, 4);
-                Object qtyObj = billTable.getValueAt(lastRow, 3);
+            Object priceObj = billTable.getValueAt(rowIndex, 4);
+            Object qtyObj = billTable.getValueAt(rowIndex, 3);
 
-                if (priceObj != null && qtyObj != null) {
-                    double price = Double.parseDouble(priceObj.toString());
-                    double qty = Double.parseDouble(qtyObj.toString());
-
-                    double total = price * qty;
-                    billTable.setValueAt(total, lastRow, 5);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Price or Quantity is missing for the last row.", "Warning", JOptionPane.WARNING_MESSAGE);
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "No rows in the table to calculate the total.", "Warning", JOptionPane.WARNING_MESSAGE);
+            if (priceObj != null && qtyObj != null) {
+                double price = Double.parseDouble(priceObj.toString());
+                double qty = Double.parseDouble(qtyObj.toString());
+                double total = price * qty;
+                billTable.setValueAt(String.format("%.2f", total), rowIndex, 5);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -597,7 +585,6 @@ public class Billing extends javax.swing.JFrame {
 
     private void checkoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkoutBtnActionPerformed
         try {
-            // Fetch input values
             String invoiceNumber = INVid.getText();
             String employeeName = EmpName.getText();
             String paymentMethod = String.valueOf(PaymentMethod.getSelectedItem());
@@ -610,7 +597,6 @@ public class Billing extends javax.swing.JFrame {
                 return;
             }
 
-            // Validate employee
             ResultSet employeeResultSet = MySQL.executeSearch(
                     "SELECT email FROM employee WHERE CONCAT(first_name, ' ', last_name) = '" + employeeName + "'");
             String employeeEmail = "";
@@ -621,20 +607,19 @@ public class Billing extends javax.swing.JFrame {
                 return;
             }
 
-            // Insert into the invoice table
             double paidAmount = Double.parseDouble(paidAmountStr);
             double totalAmount = Double.parseDouble(totalAmountStr);
             double balance = paidAmount - totalAmount;
 
-            String paymentMethodId = MethodsMap.get(paymentMethod); // Assuming MethodsMap maps payment method to IDs
-            MySQL.executeIUD("INSERT INTO `invoice` (`id`, `date`, `paid_amount`, `total_amount`, `balance`, `payment_method_id`, `employee_email`) "
-                    + "VALUES ('" + invoiceNumber + "', '" + date + "', '" + paidAmount + "', '" + totalAmount + "', '" + balance + "', '"
+            //insert into invoice
+            String paymentMethodId = MethodsMap.get(paymentMethod);
+            MySQL.executeIUD("INSERT INTO `invoice` (`id`, `date`, `paid_amount`,`payment_method_id`, `employee_email`) "
+                    + "VALUES ('" + invoiceNumber + "', '" + date + "', '" + paidAmount + "', '"
                     + paymentMethodId + "', '" + employeeEmail + "')");
 
-            // Insert into the invoice_item table
             DefaultTableModel model = (DefaultTableModel) billTable.getModel();
             for (int i = 0; i < model.getRowCount(); i++) {
-                String productId = String.valueOf(model.getValueAt(i, 1));
+                String productId = String.valueOf(model.getValueAt(i, 0));
                 String qtyStr = String.valueOf(model.getValueAt(i, 3));
                 String priceStr = String.valueOf(model.getValueAt(i, 4));
 
@@ -649,7 +634,7 @@ public class Billing extends javax.swing.JFrame {
                 if (stockResultSet.next()) {
                     stockId = stockResultSet.getString("id");
                     double currentQty = stockResultSet.getDouble("qty");
-                    double updatedQty = currentQty + qty;
+                    double updatedQty = currentQty - qty;
 
                     MySQL.executeIUD("UPDATE `stock` SET `qty` = '" + updatedQty + "' WHERE `id` = '" + stockId + "'");
                 } else {
@@ -658,14 +643,36 @@ public class Billing extends javax.swing.JFrame {
                 }
 
                 // Insert invoice item
-                MySQL.executeIUD("INSERT INTO `invoice_item` (`invoice_id`, `stock_id`, `qty`, `price`) "
-                        + "VALUES ('" + invoiceNumber + "', '" + stockId + "', '" + qty + "', '" + price + "')");
+                MySQL.executeIUD("INSERT INTO `invoice_item` ( `qty`,`stock_id`,`invoice_id`) "
+                        + "VALUES ('" + qty + "','" + stockId + "','" + invoiceNumber + "')");
             }
 
-            // Confirmation message
             JOptionPane.showMessageDialog(this, "Invoice and items saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
-            // Reset fields and generate new invoice number
+            //Report  
+            String dateTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa").format(new Date());
+            String headerImg;
+            try {
+                InputStream s = this.getClass().getResourceAsStream("/reports/apperalBill.jasper");
+                String img = new File(this.getClass().getResource("/resources/logo.jpg").getFile()).getAbsolutePath();
+
+                headerImg = img.replace("\\", "/");
+
+                HashMap<String, Object> params = new HashMap<>();
+                params.put("img", headerImg);
+                params.put("PayMethod", String.valueOf(PaymentMethod.getSelectedItem()));
+                params.put("reportDate", dateTime);
+                params.put("Total", String.valueOf(totalField.getText()));
+                params.put("Payment", String.valueOf(jTextField2.getText()));
+                params.put("balance", String.valueOf(jTextField3.getText()));
+                JRTableModelDataSource dataSource = new JRTableModelDataSource(billTable.getModel());
+
+                JasperPrint report = JasperFillManager.fillReport(s, params, dataSource);
+                JasperViewer.viewReport(report, false);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             generateInvoiceId(5, 300);
             clearAll();
 
@@ -692,24 +699,24 @@ public class Billing extends javax.swing.JFrame {
         String Pname = jLabel3.getText();
         String Pid = jLabel6.getText();
         String Pbrand = jLabel4.getText();
-        String qty = jTextField1.getText();
-        String availableQty = qtyno.getText();
+        String qtyStr = jTextField1.getText();
+        String availableQtyStr = qtyno.getText();
 
-        if (qty.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter a Quantity ", "Warning", JOptionPane.WARNING_MESSAGE);
-        } else if (!qty.matches("^\\d+(\\.\\d+)?$")) {
+        if (qtyStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter a Quantity", "Warning", JOptionPane.WARNING_MESSAGE);
+        } else if (!qtyStr.matches("^\\d+(\\.\\d+)?$")) {
             JOptionPane.showMessageDialog(this, "Please only enter numbers for Quantity", "Warning", JOptionPane.WARNING_MESSAGE);
-        } else if (Double.parseDouble(qty) <= 0) {
+        } else if (Double.parseDouble(qtyStr) <= 0) {
             JOptionPane.showMessageDialog(this, "Please Enter a Valid Quantity", "Warning", JOptionPane.WARNING_MESSAGE);
-        } else if (Double.parseDouble(qty) > Double.parseDouble(availableQty)) {
+        } else if (Double.parseDouble(qtyStr) > Double.parseDouble(availableQtyStr)) {
             JOptionPane.showMessageDialog(this, "Quantity Can't be Higher than the Available Quantity", "Warning", JOptionPane.WARNING_MESSAGE);
         } else {
-
             DefaultTableModel model = (DefaultTableModel) billTable.getModel();
-            model.addRow(new Object[]{Pid, Pname, Pbrand, qty});
+            model.addRow(new Object[]{Pid, Pname, Pbrand, qtyStr, "0.00", "0.00"});
             setPriceData();
             updateTotalField();
             resetInputs();
+            PaymentMethod.setEnabled(true);
         }
 
     }//GEN-LAST:event_addToTableBtnActionPerformed
