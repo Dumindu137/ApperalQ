@@ -68,22 +68,19 @@ public class Employees extends javax.swing.JFrame {
             boolean hasCondition = false;
 
             String sort = String.valueOf(jComboBox1.getSelectedItem());
-            if (sort.equals("Cashier")) {
+            if (sort.equals("Manager")) {
                 query += " WHERE `employee_type`.`id`=1";
                 hasCondition = true;
-            } else if (sort.equals("Manager")) {
+            } else if (sort.equals("Supervisor")) {
                 query += " WHERE `employee_type`.`id`=2";
                 hasCondition = true;
-            } else if (sort.equals("Supervisor")) {
+            } else if (sort.equals("Cashier")) {
                 query += " WHERE `employee_type`.`id`=3";
                 hasCondition = true;
-            } else if (sort.equals("Cleaning Staff")) {
+            } else if (sort.equals("Store Staff")) {
                 query += " WHERE `employee_type`.`id`=4";
                 hasCondition = true;
-            } else if (sort.equals("Store Staff")) {
-                query += " WHERE `employee_type`.`id`=5";
-                hasCondition = true;
-            }
+            } 
 
             String gendersort = String.valueOf(jComboBox2.getSelectedItem());
             if (gendersort.equals("Male")) {
@@ -186,7 +183,6 @@ public class Employees extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cashier", "Manager", "Supervisor", "Cleaning Staff", "Store Staff" }));
         jComboBox1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

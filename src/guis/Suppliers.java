@@ -311,14 +311,6 @@ public class Suppliers extends javax.swing.JFrame {
         jTextField1.setText(String.valueOf(jTable1.getValueAt(row, 0)));
         jTextField2.setFocusable(false);
 
-        /*if (evt.getClickCount() == 2) {
-
-            if (grn != null) {
-                grn.getjTextField2().setText(String.valueOf(jTable1.getValueAt(row, 0)));
-                grn.getjLabel21().setText(String.valueOf(jTable1.getValueAt(row, 1)));
-                this.dispose();
-            }
-        }*/
         try {
 
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `grn` INNER JOIN `grn_item`"
@@ -341,16 +333,27 @@ public class Suppliers extends javax.swing.JFrame {
                 grns.put(resultSet.getString("grn.id"), resultSet.getDouble("grn.paid_amount"));
             }
 
-            double totalPaid = 0;
-
-            for (Double paid : grns.values()) {
-
-                //totalPaid+=paid;
-                totalPaid = totalPaid + paid;
-            }
-
             jLabel5.setText(String.valueOf(grns.size()));
-            jTextField2.setText(String.valueOf(totalPaid - total ));
+
+            //setting pending pay
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Please select a row.", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            try {
+                String mobile = String.valueOf(jTable1.getValueAt(row, 0)).trim();
+                ResultSet resultSet2 = MySQL.executeSearch("SELECT `pending_payment` FROM `supplier` WHERE `mobile` = '" + mobile + "'");
+
+                if (resultSet2.next()) {
+                    String pendingPay = resultSet2.getString("pending_payment");
+                    jTextField2.setText(pendingPay != null ? pendingPay : "0.00");
+                } else {
+                    jTextField2.setText("0.00");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Error retrieving pending payment: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -467,7 +470,7 @@ public class Suppliers extends javax.swing.JFrame {
         }
         return null;
     }
-    
+
     private void FullReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FullReportActionPerformed
         // report
         try {
@@ -543,6 +546,7 @@ public class Suppliers extends javax.swing.JFrame {
         jTable1.clearSelection();
         loadSuppliers("first_name", "ASC", jTextField1.getText());
         jTextField1.setEnabled(true);
+        jLabel5.setText("0");
     }
 
     private void search() {

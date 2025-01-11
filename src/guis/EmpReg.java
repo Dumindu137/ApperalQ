@@ -1319,7 +1319,7 @@ public class EmpReg extends javax.swing.JDialog {
         if (!isProgrammaticChange && isUserTriggered && evt.getStateChange() == ItemEvent.SELECTED) {
             empload();
         }
- 
+
     }//GEN-LAST:event_employeeAtAddressViewItemStateChanged
 
     private void ClearBtnAtAdreesViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearBtnAtAdreesViewActionPerformed
@@ -1341,37 +1341,34 @@ public class EmpReg extends javax.swing.JDialog {
     }//GEN-LAST:event_confPswrdActionPerformed
 
     private void empload() {
-        
-    try {
-        
-        String selectedEmployee = (String) employeeAtAddressView.getSelectedItem();
 
-        DefaultTableModel model = (DefaultTableModel) AddressTable.getModel();
-        boolean employeeFound = false;
-        for (int row = 0; row < model.getRowCount(); row++) {
-            String tableEmployeeName = String.valueOf(model.getValueAt(row, 0));
+        try {
 
-            if (tableEmployeeName.equals(selectedEmployee)) {
-                employeeFound = true;
-                line_1.setText(String.valueOf(model.getValueAt(row, 2)));
-                line_2.setText(String.valueOf(model.getValueAt(row, 3)));
-                cityComboboxAtAdress.setSelectedItem(String.valueOf(model.getValueAt(row, 4)));
-                break;
+            String selectedEmployee = (String) employeeAtAddressView.getSelectedItem();
+
+            DefaultTableModel model = (DefaultTableModel) AddressTable.getModel();
+            boolean employeeFound = false;
+            for (int row = 0; row < model.getRowCount(); row++) {
+                String tableEmployeeName = String.valueOf(model.getValueAt(row, 0));
+
+                if (tableEmployeeName.equals(selectedEmployee)) {
+                    employeeFound = true;
+                    line_1.setText(String.valueOf(model.getValueAt(row, 2)));
+                    line_2.setText(String.valueOf(model.getValueAt(row, 3)));
+                    cityComboboxAtAdress.setSelectedItem(String.valueOf(model.getValueAt(row, 4)));
+                    break;
+                }
             }
-        }
 
-        // Show message only for user-triggered events
-        if (!employeeFound && isUserTriggered) {
-            JOptionPane.showMessageDialog(this, "Selected Employee is not yet Registered in the Table", "Warning", JOptionPane.WARNING_MESSAGE);
-            line_1.setText("");
-            line_2.setText("");
-            cityComboboxAtAdress.setSelectedItem("Select");
+            if (!employeeFound && isUserTriggered) {
+                line_1.setText("");
+                line_2.setText("");
+                cityComboboxAtAdress.setSelectedItem("Select");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
-
 
     /**
      * @param args the command line arguments
