@@ -233,6 +233,9 @@
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="totalField">
               <Properties>
+                <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
+                  <Format format="#0.00" subtype="-1" type="0"/>
+                </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Montserrat" size="18" style="1"/>

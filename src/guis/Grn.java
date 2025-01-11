@@ -42,7 +42,7 @@ public class Grn extends javax.swing.JFrame {
 
     public Grn(String fName, String lName) {
         initComponents();
-        generateGRNId(10, 50);
+        generateGRNId(5, 90);
         loadSuppliers();
         jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
