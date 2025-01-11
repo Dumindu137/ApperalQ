@@ -22,6 +22,7 @@ public class SupReg extends javax.swing.JDialog {
 
     private Suppliers suppliers;
     private SupReg supreg;
+    private Grn grn;
 
     /**
      * Creates new form SupReg
@@ -34,11 +35,13 @@ public class SupReg extends javax.swing.JDialog {
         this.suppliers = suppliers;
     }
 //for grn
-    public SupReg(java.awt.Frame parent, boolean modal) {
+
+    public SupReg(java.awt.Frame parent, boolean modal,Grn grn) {
         super(parent, modal);
         initComponents();
         loadSuppliers("first_name", "ASC", "");
         loadCompany();
+        this.grn = grn;
 
     }
 
@@ -369,6 +372,7 @@ public class SupReg extends javax.swing.JDialog {
                         suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
                     }
 
+                    grn.loadSuppliers();
                 }
 
             } catch (Exception e) {
@@ -419,6 +423,7 @@ public class SupReg extends javax.swing.JDialog {
                     if (suppliers != null) {
                         suppliers.loadSuppliers("first_name", "ASC", ""); // Update the table
                     }
+                     grn.loadSuppliers();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -4,48 +4,45 @@
  */
 package guis;
 
+import model.CustomerModel;
 import com.formdev.flatlaf.FlatClientProperties;
 import java.sql.ResultSet;
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
-import model.BrandModel;
 import model.MySQL;
-import model.StockModel;
-import model.productModel;
 
 /**
  *
  * @author user
  */
-public class SelectProducts extends javax.swing.JFrame {
+public class SelectCustomers extends javax.swing.JFrame {
 
     private Billing billing;
 
     /**
      * Creates new form SelectProducts
      */
-    public SelectProducts(java.awt.Frame parent, boolean modal, Billing billing) {
+    public SelectCustomers(java.awt.Frame parent, boolean modal, Billing billing) {
         initComponents();
-        loadProducts();
+        loadCustomers();
         this.billing = billing;
-         jTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter Product Name");
+        jTextField1.putClientProperty(FlatClientProperties.PLACEHOLDER_TEXT, "Enter Customer Mobile No");
     }
 
-    private void loadProducts() {
+    private void loadCustomers() {
 
         try {
-
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand`ON `product`.`brand_id` = `brand`.`id`");
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `customer`");
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
 
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
-                vector.add(resultSet.getString("id"));
-                vector.add(resultSet.getString("name"));
-                vector.add(resultSet.getString("brand_id"));
-                vector.add(resultSet.getString("brand.name"));
+                vector.add(resultSet.getString("mobile"));
+                vector.add(resultSet.getString("first_name"));
+                vector.add(resultSet.getString("last_name"));
+                vector.add(resultSet.getString("email"));
 
                 model.addRow(vector);
             }
@@ -78,7 +75,7 @@ public class SelectProducts extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Product ID", "Product Name", "Brand ", "Qty"
+                "Mobile", "First Name", "Latt Name", "Email"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -97,7 +94,7 @@ public class SelectProducts extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jLabel1.setFont(new java.awt.Font("Montserrat", 1, 18)); // NOI18N
-        jLabel1.setText("Select a Product");
+        jLabel1.setText("Select a Customer");
 
         jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
@@ -109,7 +106,7 @@ public class SelectProducts extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -117,7 +114,7 @@ public class SelectProducts extends javax.swing.JFrame {
                         .addGap(14, 14, 14))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(128, 128, 128)
+                        .addGap(113, 113, 113)
                         .addComponent(jLabel1)
                         .addContainerGap())))
         );
@@ -155,44 +152,42 @@ public class SelectProducts extends javax.swing.JFrame {
 
         if (row != -1) {
 
-            String pid = String.valueOf(jTable1.getValueAt(row, 0));
-            String pName = String.valueOf(jTable1.getValueAt(row, 1));
-            String bName = String.valueOf(jTable1.getValueAt(row, 3));
+            String mobile = String.valueOf(jTable1.getValueAt(row, 0));
+            String fname = String.valueOf(jTable1.getValueAt(row, 1));
+            String lname = String.valueOf(jTable1.getValueAt(row, 2));
 
-            productModel productmodel = new productModel();
-            BrandModel brandmodel = new BrandModel();
-            StockModel stockmodel = new StockModel();
-            productmodel.setId(pid);
-            productmodel.setName(pName);
-            brandmodel.setName(bName);
-            stockmodel.setQty(row);
+            CustomerModel customermodel = new CustomerModel();
+            customermodel.setMobile(mobile);
+            customermodel.setFirst_name(fname);
+            customermodel.setLast_name(lname);
 
-            billing.setSelectedProduct(productmodel, brandmodel);
+            billing.setSelectedCustomer(customermodel);
 
             this.dispose();
-            billing.setQtyData();
+
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
         // TODO add your handling code here:
-        SearchProducs("first_name", "ASC", jTextField1.getText());
+        SearchCustomers("first_name", "ASC", jTextField1.getText());
     }//GEN-LAST:event_jTextField1KeyReleased
-    public void SearchProducs(String column, String orderby, String name) {
+
+    public void SearchCustomers(String column, String orderby, String mobile) {
 
         try {
 
-            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `product` INNER JOIN `brand`ON `product`.`brand_id` = `brand`.`id` WHERE `product`.`name` LIKE '" + name + "%'");
+            ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `customer` WHERE `mobile` LIKE '" + mobile + "%' ORDER BY `" + column + "` " + orderby + "");
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
             model.setRowCount(0);
 
             while (resultSet.next()) {
                 Vector<String> vector = new Vector<>();
-                vector.add(resultSet.getString("id"));
-                vector.add(resultSet.getString("name"));
-                vector.add(resultSet.getString("brand_id"));
-                vector.add(resultSet.getString("brand.name"));
+                vector.add(resultSet.getString("mobile"));
+                vector.add(resultSet.getString("first_name"));
+                vector.add(resultSet.getString("last_name"));
+                vector.add(resultSet.getString("email"));
 
                 model.addRow(vector);
             }

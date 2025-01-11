@@ -96,7 +96,11 @@ public class Stock extends javax.swing.JFrame {
                 query += "`brand`.`name` ASC";
             } else if (sort.equals("Brand DESC")) {
                 query += "`brand`.`name` DESC";
-            } else if (sort.equals("Selling Price ASC")) {
+            } else if (sort.equals("Name ASC")) {
+                query += "`product`.`name` ASC";
+            } else if (sort.equals("Name DESC")) {
+                query += "`product`.`name` DESC";
+            }else if (sort.equals("Selling Price ASC")) {
                 query += "`stock`.`price` ASC";
             } else if (sort.equals("Selling Price DESC")) {
                 query += "`stock`.`price` DESC";

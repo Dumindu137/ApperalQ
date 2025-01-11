@@ -61,7 +61,6 @@ public class Grn extends javax.swing.JFrame {
         jTextField1.setFocusable(false);
         jTextField2.setFocusable(false);
         updateUserName();
-        
 
     }
 
@@ -79,7 +78,7 @@ public class Grn extends javax.swing.JFrame {
         jTextField1.setText(grnId);
     }
 
-    private void loadSuppliers() {
+    public void loadSuppliers() {
         try {
 
             ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `supplier`");
@@ -354,7 +353,7 @@ public class Grn extends javax.swing.JFrame {
                                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
                                         .addComponent(jLabel9)
-                                        .addGap(2, 2, 2)
+                                        .addGap(18, 18, 18)
                                         .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(30, 30, 30)
@@ -429,11 +428,11 @@ public class Grn extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel7)
                                     .addComponent(jLabel8))
-                                .addGap(4, 4, 4)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGap(3, 3, 3)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jLabel9)
                                     .addComponent(jLabel10))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(7, 7, 7)
                                 .addComponent(addToGrn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(4, 4, 4)
                                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -627,29 +626,27 @@ public class Grn extends javax.swing.JFrame {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
         // Save GRN button
-        try 
-        {
+        try {
             String grnNumber = jTextField1.getText();
             String supplierMobile = String.valueOf(jComboBox1.getSelectedItem());
             String employeeName = jLabel3.getText();
-            
+
             String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             String paidAmount = jFormattedTextField4.getText();
 
             if (paidAmount.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Enter Payment Amount", "Warning", JOptionPane.WARNING_MESSAGE);
             } else {
-                // Fetch the employee email from the database using the name
+
                 ResultSet employeeResultSet = MySQL.executeSearch("SELECT email FROM employee WHERE CONCAT(first_name, ' ', last_name) = '" + employeeName + "'");
                 String employeeEmail = "";
-                
 
                 if (employeeResultSet.next()) {
                     employeeEmail = employeeResultSet.getString("email");
-                    
+
                 } else {
                     JOptionPane.showMessageDialog(this, "Employee not found in the database", "Error", JOptionPane.ERROR_MESSAGE);
-                    return; // Exit if the employee email is not found
+                    return;
                 }
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -657,7 +654,6 @@ public class Grn extends javax.swing.JFrame {
                 // Insert to GRN table
                 MySQL.executeIUD("INSERT INTO `grn` VALUES('" + grnNumber + "','" + date + "','" + paidAmount + "','" + employeeEmail + "','" + supplierMap.get(supplierMobile) + "')");
 
-                
                 for (GRNItem grnItem : grnItemMap.values()) {
 
                     ResultSet resultSet = MySQL.executeSearch("SELECT * FROM `stock` WHERE "
@@ -668,14 +664,14 @@ public class Grn extends javax.swing.JFrame {
                     String sid = "";
 
                     if (resultSet.next()) {
-                        
+
                         sid = resultSet.getString("id");
 
                         String currentQty = resultSet.getString("qty");
                         String updatedQuantity = String.valueOf(Double.parseDouble(currentQty) + grnItem.getQty());
                         MySQL.executeIUD("UPDATE `stock` SET `qty` = '" + updatedQuantity + "' WHERE `id` = '" + sid + "'");
                     } else {
-                        
+
                         MySQL.executeIUD("INSERT INTO `stock`(`product_id`,`qty`,`price`,`mfd`) "
                                 + "VALUES('" + grnItem.getProductId() + "','" + grnItem.getQty() + "','" + grnItem.getSellingPrice() + "', "
                                 + "'" + sdf.format(grnItem.getMfd()) + "')");
@@ -693,8 +689,22 @@ public class Grn extends javax.swing.JFrame {
                     MySQL.executeIUD("INSERT INTO `grn_item`(`stock_id`,`qty`,`price`,`grn_id`) "
                             + "VALUES('" + sid + "','" + grnItem.getQty() + "','" + grnItem.getBuyingPrice() + "','" + grnNumber + "')");
                 }
+//saving pendingpay to supplier
+                String Blanace = jLabel20.getText();
+                if (!Blanace.isEmpty()) {
+                    double balanceAmount = Double.parseDouble(Blanace);
+
+                    if (balanceAmount < 0) {
+                        // Convert to a positive value 
+                        double positiveBalance = Math.abs(balanceAmount);
+                        MySQL.executeIUD("UPDATE `supplier` SET `pending_payment` = '" + positiveBalance + "' WHERE `supplier`.`mobile` = '" + supplierMap.get(supplierMobile) + "'");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Balance amount is empty. Please enter a valid amount.", "Warning", JOptionPane.WARNING_MESSAGE);
+                }
 
                 JOptionPane.showMessageDialog(this, "GRN Saved to Stock", "Success", JOptionPane.INFORMATION_MESSAGE);
+                reset();
                 generateGRNId(1000, 9999);
             }
         } catch (Exception e) {
@@ -706,7 +716,7 @@ public class Grn extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        SupReg supreg = new SupReg(this, true);
+        SupReg supreg = new SupReg(null, true, this);
         supreg.setVisible(true);
 
     }//GEN-LAST:event_jButton2ActionPerformed
